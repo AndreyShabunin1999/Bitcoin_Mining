@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".view.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/top_linearlayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_linearlayout"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="20dp"
+        android:weightSum="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/mini_logo" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.4" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/startBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.6"
+            android:background="@drawable/gradient_btn_reconnection"
+            android:text="@string/text_start_btn"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/balance_linearlayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/gradient_linearlayout_balance"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="14dp"
+        android:weightSum="3"
+        app:layout_constraintBottom_toTopOf="@+id/linearlayout_progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_linearlayout"
+        app:layout_constraintVertical_chainStyle="spread">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="13dp"
+            android:text="@string/text_your_balance"
+            android:textColor="@color/turquoise"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/big_text_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="13dp"
+            android:textColor="@color/white"
+            android:text="@string/text_balance_btc_satoshi"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/small_text_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
+            android:textColor="@color/white"
+            android:text="@string/text_btc"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout_progress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btn_boost"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/balance_linearlayout">
+
+        <TextView
+            android:id="@+id/tvProgress"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@drawable/rectangle_progress_text"
+            android:gravity="center_horizontal"
+            android:text="@string/text_content_progressBar"
+            android:textSize="10sp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/gradient_progressbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/balance_linearlayout" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_boost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_btn_boost"
+        android:drawableEnd="@drawable/rocket"
+        android:drawablePadding="20dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:text="@string/text_btn_boost"
+        android:textColor="@color/turquoise_blue"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/layout_servers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout_progress" />
+
+    <LinearLayout
+        android:id="@+id/layout_servers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:translationZ="1dp"
+        android:weightSum="7"
+        app:layout_constraintBottom_toTopOf="@+id/btn_take_btc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_boost"
+        app:layout_constraintVertical_chainStyle="spread">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout_server1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_card_server"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/img_ping_server1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/metric_disable" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_ping_server1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="35dp"
+                android:paddingBottom="10dp"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/text_ping_server1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ping"
+                    android:textColor="@color/black"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tv_value_ping_server1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="@string/text_value_ping_server1"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tv_ms_server1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ms"
+                    android:textColor="@color/black"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linearlayout_ping_server1"
+                android:layout_centerHorizontal="true"
+                android:text="@string/text_server_1"
+                android:textColor="@color/turquoise_text"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout_server2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_card_server"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/img_ping_server2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/metric_disable" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_ping_server2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="35dp"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/text_ping_server2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ping"
+                    android:textColor="@color/text_black"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tv_value_ping_server2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="@string/text_value_ping_server2"
+                    android:textColor="@color/text_black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tv_ms_server2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ms"
+                    android:textColor="@color/text_black"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linearlayout_ping_server2"
+                android:layout_centerHorizontal="true"
+                android:text="@string/text_server_2"
+                android:textColor="@color/turquoise_text"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout_server3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_card_server"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/img_ping_server3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/metric_disable" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_ping_server3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="35dp"
+                android:paddingBottom="10dp"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/text_ping_server3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ping"
+                    android:textColor="@color/text_black"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tv_value_ping_server3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="@string/text_value_ping_server3"
+                    android:textColor="@color/text_black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tv_ms_server3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ms"
+                    android:textColor="@color/text_black"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linearlayout_ping_server3"
+                android:layout_centerHorizontal="true"
+                android:text="@string/text_server_3"
+                android:textColor="@color/turquoise_text"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout_server4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_card_server"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/img_ping_server4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/metric_disable" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_ping_server4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="35dp"
+                android:paddingBottom="10dp"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/text_ping_server4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ping"
+                    android:textColor="@color/text_black"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tv_value_ping_server4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="@string/text_value_ping_server4"
+                    android:textColor="@color/text_black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tv_ms_server4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ms"
+                    android:textColor="@color/text_black"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linearlayout_ping_server4"
+                android:layout_centerHorizontal="true"
+                android:text="@string/text_server_4"
+                android:textColor="@color/turquoise_text"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_take_btc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/gradient_btn_take_to_btc"
+        android:paddingTop="28dp"
+        android:paddingBottom="28dp"
+        android:text="@string/text_btn_take_to_btc"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:translationZ="1dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_boost"
+        app:layout_constraintVertical_bias="0.797" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
