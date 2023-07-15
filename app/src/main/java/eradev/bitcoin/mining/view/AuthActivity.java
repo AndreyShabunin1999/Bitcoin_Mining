@@ -6,8 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import eradev.bitcoin.mining.CallbackFragment;
 import eradev.bitcoin.mining.checkNetwork.NetworkChangeListener;
@@ -24,7 +26,9 @@ public class AuthActivity extends AppCompatActivity implements CallbackFragment 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         addFragmentLogin();
     }
 

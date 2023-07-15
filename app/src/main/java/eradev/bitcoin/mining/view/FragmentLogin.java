@@ -28,6 +28,7 @@ import eradev.bitcoin.mining.CallbackFragment;
 import eradev.bitcoin.mining.R;
 import eradev.bitcoin.mining.data.local.App;
 import eradev.bitcoin.mining.data.local.BitcoinMiningDB;
+import eradev.bitcoin.mining.data.local.entity.UserEntity;
 import eradev.bitcoin.mining.data.remote.ApiService;
 import eradev.bitcoin.mining.data.remote.models.StatusMessage;
 import eradev.bitcoin.mining.data.remote.models.User;
@@ -79,7 +80,7 @@ public class FragmentLogin extends Fragment {
                                 //Проверка на существование пользователя на сервере
                                 if(response.body().getSuccess() == 1){
                                     User user = response.body().getUsers().get(0);
-                                    updateUserInBD(user);
+                                    updateUserInBD(user, "");
                                     startActivity(new Intent(getContext(), MainActivity.class));
                                 } else {
                                     Toast.makeText(getContext(), R.string.text_not_found_user, Toast.LENGTH_SHORT).show();
@@ -117,7 +118,7 @@ public class FragmentLogin extends Fragment {
                                 //Проверка на существование пользователя на сервере
                                 if(response.body().getSuccess() == 1){
                                     User user = response.body().getUsers().get(0);
-                                    updateUserInBD(user);
+                                    updateUserInBD(user, etPassword.getText().toString().trim());
                                     startActivity(new Intent(getContext(), MainActivity.class));
                                 } else {
                                     Toast.makeText(getContext(), R.string.text_not_found_user, Toast.LENGTH_SHORT).show();
@@ -150,12 +151,11 @@ public class FragmentLogin extends Fragment {
     }
 
     //Функция обновления данных о Пользователе
-    private void updateUserInBD(User user){
+    private void updateUserInBD(User user, String password){
         BitcoinMiningDB db = App.getInstance().getDatabase();
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
-        executorService.execute(() -> handler.post(() -> db.userDAO().updateUser(0, user.getEmail(), user.getEntered_code(),
-                user.getRef_code(), user.getRef_value(), user.getServer_time(),user.getValue())));
+        executorService.execute(() -> handler.post(() -> db.userDAO().insert(new UserEntity(user, password))));
     }
 
     public void setCallbackFragment(CallbackFragment callbackFragment){

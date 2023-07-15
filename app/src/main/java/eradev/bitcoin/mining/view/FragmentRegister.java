@@ -1,6 +1,7 @@
 package eradev.bitcoin.mining.view;
 
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -80,6 +81,7 @@ public class FragmentRegister extends Fragment {
                             } else {
                                 addUserBD(new UserEntity(etEmail.getText().toString().trim(), etPassword.getText().toString().trim()));
                                 Toast.makeText(getContext(), R.string.text_success_registration, Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getContext(), MainActivity.class));
                             }
                         } else {
                             Toast.makeText(getContext(), R.string.text_error_registration, Toast.LENGTH_SHORT).show();
@@ -115,6 +117,7 @@ public class FragmentRegister extends Fragment {
                                 } else {
                                     addUserBD(new UserEntity(etEmail.getText().toString().trim(), ""));
                                     Toast.makeText(getContext(), R.string.text_success_registration, Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getContext(), MainActivity.class));
                                 }
                             } else {
                                 Toast.makeText(getContext(), R.string.text_error_registration, Toast.LENGTH_SHORT).show();

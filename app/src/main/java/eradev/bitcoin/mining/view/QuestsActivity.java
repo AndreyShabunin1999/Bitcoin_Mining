@@ -2,33 +2,20 @@ package eradev.bitcoin.mining.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import eradev.bitcoin.mining.R;
 
-public class ConnectionErrorActivity extends AppCompatActivity {
-
-    Button btnReconnection;
+public class QuestsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connection_error);
-
-        btnReconnection = findViewById(R.id.btn_reconnection);
-
-        btnReconnection.setOnClickListener(v -> {
-            Intent intent = new Intent(ConnectionErrorActivity.this, SplashScreen.class);
-            startActivity(intent);
-            finish();
-        });
+        setContentView(R.layout.activity_quests);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }

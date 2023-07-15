@@ -42,6 +42,10 @@ public class UserEntity {
     @ColumnInfo(name = "value")
     Integer value;
 
+    //Нажималась ли кнопка "Start Mining"
+    @ColumnInfo(name = "mining_is_started")
+    Integer mining_is_started;
+
     @Ignore
     public UserEntity() {
 
@@ -56,16 +60,19 @@ public class UserEntity {
         this.ref_value = 0;
         this.value = 0;
         this.server_time = "";
+        this.mining_is_started = 0;
     }
 
-    public UserEntity(User user) {
+    public UserEntity(User user, String password) {
         this.id = 0;
         this.email = user.getEmail();
+        this.password = password;
         this.entered_code = user.getEntered_code();
         this.ref_code = user.getRef_code();
         this.ref_value = user.getRef_value();
-        this.value = user.getValue();
         this.server_time = user.getServer_time();
+        this.value = user.getValue();
+        this.mining_is_started = user.getMining_is_started();
     }
 
     public String getEmail() {
@@ -130,5 +137,13 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getMining_is_started() {
+        return mining_is_started;
+    }
+
+    public void setMining_is_started(Integer mining_is_started) {
+        this.mining_is_started = mining_is_started;
     }
 }

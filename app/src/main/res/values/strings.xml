@@ -45,4 +45,16 @@
     <string name="text_error_email">Поле Email некорректно</string>
     <string name="text_error_auth">Ошибка аутентификации!</string>
     <string name="text_not_found_user">Пользователь не найден!</string>
+    <string name="text_after_start_btn">Вывести</string>
+    <string name="text_start_mining">Майнинг запущен</string>
+    <string name="text_error_start_mining">Майнинг не запущен</string>
+    <string name="title_activity_quests">QuestsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

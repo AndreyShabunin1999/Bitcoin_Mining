@@ -53,4 +53,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("get_user_google.php")
     Call<Users> getUserGoogle(@Field("email") String email);
+
+    //Старт майнинга
+    @FormUrlEncoded
+    @POST("start_minig.php")
+    Call<StatusMessage> startMining(@Field("email") String email);
 }

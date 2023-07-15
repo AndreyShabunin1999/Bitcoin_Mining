@@ -22,6 +22,12 @@ public interface UserDAO {
     @Query("SELECT * FROM User WHERE id = :id")
     UserEntity getUser(int id);
 
+    @Query("SELECT mining_is_started FROM User WHERE id = :id")
+    Integer getUserMiningIsStarted(int id);
+
+    @Query("SELECT email FROM User WHERE id = :id")
+    String getEmailUser(int id);
+
     @Query("UPDATE User SET email = :email," +
             "entered_code = :entered_code," +
             "ref_code = :ref_code," +
