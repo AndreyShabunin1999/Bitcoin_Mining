@@ -22,7 +22,7 @@
     <string name="text_test">test</string>
     <string name="text_start_btn">Start</string>
     <string name="text_your_balance">YOUR BALANCE</string>
-    <string name="text_balance_btc_satoshi">15 Satoshi</string>
+    <string name="text_balance_btc_satoshi">%d Satoshi</string>
     <string name="text_btn_boost">BOOST</string>
     <string name="text_btn_take_to_btc">TAKE BTC</string>
     <string name="text_content_progressBar">0%</string>
@@ -34,7 +34,7 @@
     <string name="text_server_3">SERVER 3</string>
     <string name="text_server_4">SERVER 4</string>
     <string name="text_value_ping_server2">6</string>
-    <string name="text_btc">0.00000015 BTC</string>
+    <string name="text_btc">%.8f BTC</string>
     <string name="text_value_ping_server4">10</string>
     <string name="text_value_ping_server3">25</string>
     <string name="text_error_registration">ошибка регистрации!</string>
@@ -57,4 +57,9 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="text_progress_string_up">64%</string>
+    <string name="text_conclusion_balance_up">Для вывода необходимо достигнуть 100%</string>
+    <string name="text_tv_acceleration">Ускорение</string>
+    <string name="text_dialog_boost">Для увеличения скорости необходимо посмотреть рекламу</string>
+    <string name="text_btn_ok">OK</string>
 </resources>
