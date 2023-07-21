@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
         android:name="eradev.bitcoin.mining.data.local.App"
@@ -17,13 +18,20 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ReferalsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.UnityAdsActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.QuestsActivity"
             android:exported="false"
             android:label="@string/title_activity_quests"
             android:theme="@style/Theme.BitcoinMining.NoActionBar" />
         <activity
             android:name=".view.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:hardwareAccelerated="true" />
         <activity
             android:name=".view.AboutTheProgramActivity"
             android:exported="false" />

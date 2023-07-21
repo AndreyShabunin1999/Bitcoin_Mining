@@ -107,24 +107,57 @@
                 android:textColor="@color/turquoise"
                 android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/big_text_balance"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="13dp"
-                android:textColor="@color/white"
-                android:text="@{@string/text_balance_btc_satoshi(user.value)}"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/small_text_balance"
+                <TextView
+                    android:id="@+id/big_text_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="13dp"
+                    android:textColor="@color/white"
+                    android:text="@{String.valueOf(user.value)}"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_satoshi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="13dp"
+                    android:textColor="@color/white"
+                    android:text="@string/text_satoshi"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="12dp"
-                android:textColor="@color/white"
-                android:text="@{@string/text_btc((float) user.value / 100000000F)}"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/small_text_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="12dp"
+                    android:textColor="@color/white"
+                    android:text="@{@string/value_float_btc((float) user.value / 100000000F)}"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_btc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="12dp"
+                    android:textColor="@color/white"
+                    android:text="@string/text_btc"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -217,6 +250,15 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/metric_disable" />
 
+                <ImageView
+                    android:id="@+id/img_stick_server1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/stick_disable"
+                    android:rotation="136.8" />
+
                 <LinearLayout
                     android:id="@+id/linearlayout_ping_server1"
                     android:layout_width="wrap_content"
@@ -233,7 +275,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ping"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_black"
                         android:textSize="10sp" />
 
                     <TextView
@@ -243,7 +285,7 @@
                         android:paddingStart="2dp"
                         android:paddingEnd="2dp"
                         android:text="@string/text_value_ping_server1"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_black"
                         android:textSize="20sp" />
 
                     <TextView
@@ -251,7 +293,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ms"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_black"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -287,6 +329,15 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/metric_disable" />
+
+                <ImageView
+                    android:id="@+id/img_stick_server2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:rotation="158.4"
+                    android:background="@drawable/stick_disable" />
 
                 <LinearLayout
                     android:id="@+id/linearlayout_ping_server2"
@@ -358,6 +409,15 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/metric_disable" />
 
+                <ImageView
+                    android:id="@+id/img_stick_server3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:rotation="90"
+                    android:background="@drawable/stick_disable" />
+
                 <LinearLayout
                     android:id="@+id/linearlayout_ping_server3"
                     android:layout_width="wrap_content"
@@ -428,6 +488,15 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/metric_disable" />
+
+                <ImageView
+                    android:id="@+id/img_stick_server4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:rotation="144"
+                    android:background="@drawable/stick_disable" />
 
                 <LinearLayout
                     android:id="@+id/linearlayout_ping_server4"

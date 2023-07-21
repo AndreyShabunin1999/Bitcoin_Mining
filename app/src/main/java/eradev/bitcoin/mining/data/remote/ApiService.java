@@ -58,4 +58,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("start_minig.php")
     Call<StatusMessage> startMining(@Field("email") String email);
+
+    //Буст
+    @FormUrlEncoded
+    @POST("update_boost.php")
+    Call<StatusMessage> sendBoost(@Field("email") String email);
 }

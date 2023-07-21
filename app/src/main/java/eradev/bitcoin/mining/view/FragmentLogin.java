@@ -108,7 +108,6 @@ public class FragmentLogin extends Fragment {
                 if (validEmail(etEmail.getText().toString().trim())) {
                     ApiService promoMinerApi = Servicey.getPromoMinerApi();
                     Call<Users> call = promoMinerApi.getUser(etEmail.getText().toString().trim(), etPassword.getText().toString().trim());
-
                     call.enqueue(new Callback<Users>() {
                         @Override
                         public void onResponse(@NonNull Call<Users> call, @NonNull Response<Users> response) {

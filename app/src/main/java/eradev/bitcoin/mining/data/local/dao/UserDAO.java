@@ -9,6 +9,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import eradev.bitcoin.mining.data.local.entity.UserEntity;
+import io.reactivex.Single;
 
 @Dao
 public interface UserDAO {
@@ -22,8 +23,8 @@ public interface UserDAO {
     @Query("SELECT * FROM User WHERE id = :id")
     UserEntity getUser(int id);
 
-    @Query("SELECT mining_is_started FROM User WHERE id = :id")
-    Integer getUserMiningIsStarted(int id);
+    @Query("SELECT * FROM User WHERE id = :id")
+    Single<UserEntity> getSingleUser(int id);
 
     @Query("SELECT email FROM User WHERE id = :id")
     String getEmailUser(int id);
@@ -33,6 +34,9 @@ public interface UserDAO {
             "ref_code = :ref_code," +
             "ref_value = :ref_value," +
             "server_time = :server_time," +
-            "value = :value WHERE id = :id")
-    void updateUser(int id, String email, String entered_code, String ref_code, Integer ref_value, String server_time, Integer value);
+            "value = :value," +
+            "boost = :boost," +
+            "mining_is_started = :mining_is_started " +
+            "WHERE id = :id")
+    void updateUser(int id, String email, String entered_code, String ref_code, Integer ref_value, String server_time, Integer value, Integer mining_is_started, String boost);
 }

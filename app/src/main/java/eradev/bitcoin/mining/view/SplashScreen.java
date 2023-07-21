@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -199,7 +200,6 @@ public class SplashScreen extends AppCompatActivity {
             UserEntity user = db.userDAO().getUser(0);
             //Если в БД существует пользователь, то выполняется запрос на наличие данных на сервере
             if(user != null) {
-                Log.e("USER", user.getEmail());
                 updateUserDB(user);
             } else {
                 createIntent(false);
@@ -212,7 +212,7 @@ public class SplashScreen extends AppCompatActivity {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executorService.execute(() -> handler.post(() -> db.userDAO().updateUser(0, user.getEmail(),
-                user.getEntered_code(), user.getRef_code(), user.getRef_value(), user.getServer_time(),user.getValue())));
+                user.getEntered_code(), user.getRef_code(), user.getRef_value(), user.getServer_time(),user.getValue(), user.getMining_is_started(), user.getBoost())));
     }
 
     public void updateUserDB(UserEntity user){
@@ -232,7 +232,6 @@ public class SplashScreen extends AppCompatActivity {
             public void onResponse(@NonNull Call<Users> call, @NonNull Response<Users> response) {
                 if(response.isSuccessful()){
                     assert response.body() != null;
-                    Log.e("FINAL", "УСПЕХ");
                     //обновляем данные о пользователе в БД
                     updateUserDB(response.body().getUsers().get(0));
                     // Если пользователь есть на сервере

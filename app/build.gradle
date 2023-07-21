@@ -49,4 +49,13 @@ dependencies {
     //Room
     implementation "androidx.room:room-runtime:2.5.2"
     annotationProcessor "androidx.room:room-compiler:2.5.2"
+    implementation("androidx.room:room-rxjava2:2.5.2")
+
+
+    //unity ads
+    implementation 'com.unity3d.ads:unity-ads:4.8.0'
+
+    //RX JAVA
+    implementation "io.reactivex.rxjava3:rxjava:3.0.0-RC6"
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
 }

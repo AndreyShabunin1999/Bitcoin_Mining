@@ -46,6 +46,9 @@ public class UserEntity {
     @ColumnInfo(name = "mining_is_started")
     Integer mining_is_started;
 
+    @ColumnInfo(name = "boost")
+    String boost;
+
     @Ignore
     public UserEntity() {
 
@@ -61,6 +64,7 @@ public class UserEntity {
         this.value = 0;
         this.server_time = "";
         this.mining_is_started = 0;
+        this.boost = "";
     }
 
     public UserEntity(User user, String password) {
@@ -73,6 +77,7 @@ public class UserEntity {
         this.server_time = user.getServer_time();
         this.value = user.getValue();
         this.mining_is_started = user.getMining_is_started();
+        this.boost = user.getBoost();
     }
 
     public String getEmail() {
@@ -141,6 +146,14 @@ public class UserEntity {
 
     public Integer getMining_is_started() {
         return mining_is_started;
+    }
+
+    public String getBoost() {
+        return boost;
+    }
+
+    public void setBoost(String boost) {
+        this.boost = boost;
     }
 
     public void setMining_is_started(Integer mining_is_started) {

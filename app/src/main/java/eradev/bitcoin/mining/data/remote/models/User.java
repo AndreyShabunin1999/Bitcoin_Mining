@@ -15,11 +15,12 @@ public class User {
     private String server_time;
     @SerializedName("value")
     private Integer value;
-
     @SerializedName("mining_is_started")
     private Integer mining_is_started;
+    @SerializedName("boost")
+    String boost;
 
-    public User(String email, String entered_code, String ref_code, Integer ref_value, String server_time, Integer value, Integer mining_is_started) {
+    public User(String email, String entered_code, String ref_code, Integer ref_value, String server_time, Integer value, Integer mining_is_started, String boost) {
         this.email = email;
         this.entered_code = entered_code;
         this.ref_code = ref_code;
@@ -27,6 +28,15 @@ public class User {
         this.server_time = server_time;
         this.value = value;
         this.mining_is_started = mining_is_started;
+        this.boost = boost;
+    }
+
+    public String getBoost() {
+        return boost;
+    }
+
+    public void setBoost(String boost) {
+        this.boost = boost;
     }
 
     public String getEmail() {
