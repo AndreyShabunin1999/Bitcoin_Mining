@@ -63,4 +63,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("update_boost.php")
     Call<StatusMessage> sendBoost(@Field("email") String email);
+
+    //Увеличение баланса пользователя
+    @FormUrlEncoded
+    @POST("update_value_mining.php")
+    Call<StatusMessage> sendBalance(@Field("email") String email, @Field("value") int value);
 }

@@ -68,4 +68,9 @@
     <string name="text_unique_offer">Уникальное приложение для заработка онлайн</string>
     <string name="text_change_server">смена сервера</string>
     <string name="text_ads_change_server">Для смены сервера необходимо посмотреть рекламу</string>
+    <string name="text_take_btc">TAKE BTC</string>
+    <string name="text_btn_quest_url">перейти</string>
+    <string name="text_btn_quest_satoshi">%d Satoshi</string>
+    <string name="text_btn_right_quest_var1">получить</string>
+    <string name="text_btn_right_quest_var2">перейти</string>
 </resources>

@@ -9,6 +9,7 @@
     <application
         android:name="eradev.bitcoin.mining.data.local.App"
         android:allowBackup="true"
+        android:fullBackupOnly="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -18,16 +19,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ReferalsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.UnityAdsActivity"
+            android:name=".view.ReferalsActivity"
             android:exported="false" />
         <activity
             android:name=".view.QuestsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_quests"
-            android:theme="@style/Theme.BitcoinMining.NoActionBar" />
+            android:exported="false" />
         <activity
             android:name=".view.MainActivity"
             android:exported="false"

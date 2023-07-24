@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     private final String unityGameID = "5350565";
     private final Boolean testMode = true;
     private final String adUnitId = "Rewarded_Android";
-    private int ping;
 
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
 
@@ -120,19 +119,13 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             Log.v("UnityAdsExample", "onUnityAdsShowComplete: " + placementId);
             if (state.equals(UnityAds.UnityAdsShowCompletionState.COMPLETED)) {
                 if(rewardAfterAds){
-                    //проверка на время буста (не прошло ли 8 часов)
-                    checkTimeBoost();
                     //расчет нового значения буста
                     getAcceleration();
                     sendServerBoost();
                 } else {
-                    //пересчет пинга
-                    ping = calculatePing();
-                    //отключаем текущий сервер
-                    settingViewServer(false);
                     sharedPreferences.edit().putInt("currentServer", clickServer).apply();
-                    //включение нового сервера
-                    settingViewServer(true);
+                    //пересчет пинга
+                    calculatePing();
                 }
             }
         }
@@ -192,23 +185,17 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             Handler handler = new Handler(Looper.getMainLooper());
             executorService.execute(() -> handler.post(() -> {
                 ConfigAppEntity configApp = db.configAppDao().getInfoApp(0);
-                int maxBoost = Integer.parseInt(configApp.getMaxBoost());
-                int minBoost = Integer.parseInt(configApp.getMinBoost());
-                int acceleration = Integer.parseInt(configApp.getMiningPerMinute());
-                saveValueSP(minBoost, maxBoost, acceleration);
+                saveValueSP(Integer.parseInt(configApp.getMinBoost()), Integer.parseInt(configApp.getMaxBoost()), boost, Integer.parseInt(configApp.getMiningPerMinute()));
             }));
         } else {
-            int minBoost = sharedPreferences.getInt("minBoost", 3);
-            int maxBoost = sharedPreferences.getInt("maxBoost", 6);
-            int acceleration = sharedPreferences.getInt("boost", 1);
-            saveValueSP(minBoost, maxBoost, acceleration);
+            saveValueSP(sharedPreferences.getInt("minBoost", 3), sharedPreferences.getInt("maxBoost", 6), boost);
         }
     }
 
-    private void saveValueSP(int minBoost, int maxBoost, int acceleration){
+    private void saveValueSP(int minBoost, int maxBoost, int currentBoost, int... miningPerMinute){
         //Сохранение новых значений
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        minBoost = (int) (maxBoost * 0.9);
+        minBoost = (int) (minBoost * 0.9);
         maxBoost = (int) (maxBoost * 0.9);
         //Значение минимального буста не может быть меньше 3
         if(minBoost > 3){
@@ -216,32 +203,52 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         }
         //Значение максимального буста не может быть меньше 6
         if(maxBoost > 6){
-            myEdit.putInt("minBoost", maxBoost);
+            myEdit.putInt("maxBoost", maxBoost);
         }
-        myEdit.putInt("boost", calculateRandom(minBoost, maxBoost) + acceleration);
+        if(miningPerMinute != null){
+            myEdit.putInt("miningPerMinute", miningPerMinute[0]).apply();
+        }
+        myEdit.putInt("boost", calculateRandom(minBoost, maxBoost) + currentBoost);
         myEdit.apply();
     }
 
     //Функция расчета пинга
-    private int calculatePing(){
+    private void calculatePing(){
         ArrayList<Integer> pingList = new ArrayList<>();
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 4; i++){
             pingList.add(calculateRandom(1, 50));
         }
         Collections.sort(pingList);
-        return pingList.get(1);
+        //Сохраняет значение пинга для текущего сервера
+        sharedPreferences.edit().putInt("ping", pingList.get(1)).apply();
+        for(int i = 0; i < pingList.size(); i++){
+            if(sharedPreferences.getInt("currentServer", 0) == i){
+                if(i==1){
+                    continue;
+                } else {
+                    i++;
+                    settingViewServer(false, i, pingList.get(i-1));
+                    continue;
+                }
+            }
+            //значение с индексом 1 для текущего сервера
+            if(i == 1){
+                i++;
+                settingViewServer(false, i-1, pingList.get(i));
+            }
+            settingViewServer(false, i, pingList.get(i));
+        }
+        settingViewServer(true, sharedPreferences.getInt("currentServer", 0), pingList.get(1));
     }
 
     private void changeViewCard(TextView textPingServer, TextView valuePingServer, TextView msServer, RelativeLayout relativeLayoutServer,
-                                ImageView imgStickServer, ImageView imgMetricServer, boolean active){
+                                ImageView imgStickServer, ImageView imgMetricServer, boolean active, int ping){
         if(active){
             textPingServer.setTextColor(ContextCompat.getColor(this, R.color.color_text_ping));
-            valuePingServer.setText(String.valueOf(ping));
             valuePingServer.setTextColor(ContextCompat.getColor(this, R.color.white));
             msServer.setTextColor(ContextCompat.getColor(this, R.color.turquoise_blue));
             imgMetricServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.metric_active));
             imgStickServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.stick_active));
-            imgStickServer.setRotation((float) (180 - (ping * 3.6)));
             relativeLayoutServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.gradient_active_card));
         } else {
             textPingServer.setTextColor(ContextCompat.getColor(this, R.color.text_black));
@@ -251,22 +258,23 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             imgStickServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.stick_disable));
             relativeLayoutServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.gradient_card_server));
         }
+        valuePingServer.setText(String.valueOf(ping));
+        imgStickServer.setRotation((float) (180 - (ping * 3.6)));
     }
 
-    private void settingViewServer(boolean active){
-        int currentServer = sharedPreferences.getInt("currentServer", 1);
+    private void settingViewServer(boolean active, int currentServer, int ping){
         switch (currentServer) {
+            case 0:
+                changeViewCard(textPingServer1, pingServer1, msServer1, relativeLayout_server1, imgStickServer1, imgMetricServer1, active, ping);
+                break;
             case 1:
-                changeViewCard(textPingServer1, pingServer1, msServer1, relativeLayout_server1, imgStickServer1, imgMetricServer1, active);
+                changeViewCard(textPingServer2, pingServer2, msServer2, relativeLayout_server2, imgStickServer2, imgMetricServer2, active, ping);
                 break;
             case 2:
-                changeViewCard(textPingServer2, pingServer2, msServer2, relativeLayout_server2, imgStickServer2, imgMetricServer2, active);
+                changeViewCard(textPingServer3, pingServer3, msServer3, relativeLayout_server3, imgStickServer3, imgMetricServer3, active, ping);
                 break;
             case 3:
-                changeViewCard(textPingServer3, pingServer3, msServer3, relativeLayout_server3, imgStickServer3, imgMetricServer3, active);
-                break;
-            case 4:
-                changeViewCard(textPingServer4, pingServer4, msServer4, relativeLayout_server4, imgStickServer4, imgMetricServer4, active);
+                changeViewCard(textPingServer4, pingServer4, msServer4, relativeLayout_server4, imgStickServer4, imgMetricServer4, active, ping);
                 break;
         }
     }
@@ -298,9 +306,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         UnityAds.initialize(MainActivity.this, unityGameID, testMode, this);
 
         //Расчет пинга
-        ping = calculatePing();
-        //Загрузка серверов
-        settingViewServer(true);
+        calculatePing();
 
         startBtn.setOnClickListener(v -> {
             Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
@@ -312,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             tv_duplicate_progress.setText(R.string.text_progress_string_up);
 
             Call<StatusMessage> startMiningCall = apiService
-                    .startMining("andrushka456@gmail.com");
+                    .startMining(binding.getUser().getEmail());
             startMiningCall.enqueue(new Callback<StatusMessage>() {
                 @Override
                 public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
@@ -338,10 +344,10 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         });
 
         // Переключение серверов
-        relativeLayout_server1.setOnClickListener(v -> changeServer(1));
-        relativeLayout_server2.setOnClickListener(v -> changeServer(2));
-        relativeLayout_server3.setOnClickListener(v -> changeServer(3));
-        relativeLayout_server4.setOnClickListener(v -> changeServer(4));
+        relativeLayout_server1.setOnClickListener(v -> changeServer(0));
+        relativeLayout_server2.setOnClickListener(v -> changeServer(1));
+        relativeLayout_server3.setOnClickListener(v -> changeServer(2));
+        relativeLayout_server4.setOnClickListener(v -> changeServer(3));
 
         //Обработка нажатия кнопки
         boostBtn.setOnClickListener(v -> {
@@ -350,6 +356,40 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         });
         //Обработка нажатия кнопки "Take BTC"
         takeBtcBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, QuestsActivity.class)));
+
+
+        //checkTime();
+
+    }
+
+    private void checkTime() {
+        //Если буст не активирован (так как значение 1 только у неактивированного)
+        if(sharedPreferences.getInt("boost", 1) == 1){
+            Date dateLastOnline = null;
+            try {
+                dateLastOnline = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).parse(sharedPreferences.getString("lastTimeOnline",""));
+            } catch (ParseException ignored){
+
+            }
+            int minutes = checkOfflineTimeMining(dateLastOnline, Calendar.getInstance().getTime());
+            //Высчитываем новый баланс пользователя
+            //int newBalance = binding.getUser().getValue() + (minutes * calculateMiningPerMinute());
+            //Обновляем данные о балансе пользователя на сервере
+            //updateBalanceUser(newBalance);
+            //Сохраняем локально на время работы приложения
+         //   sharedPreferences.edit().putInt("balance", newBalance).apply();
+        } else {
+
+        }
+    }
+    //Функция
+    private int checkOfflineTimeMining(Date date1, Date date2) {
+        Log.e("DATE2 FUNC", String.valueOf(date2));
+        Log.e("DATE1 FUNC", String.valueOf(date1));
+        //-3 из-за разницы во времени с сервером
+        //int diffHours = (int) (((date2.getTime() - date1.getTime()) / (60 * 60 * 1000)) - 3);
+        //-180 из-за разницы во времени с сервером (отнимаю 3 часа)
+        return (int) (((date2.getTime() - date1.getTime()) / (60 * 1000)) - 180);
     }
 
     private void processMining(int isStartMining){
@@ -361,12 +401,10 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                 public void run() {
                     try {
                         while(true) {
-                            sleep(1000);
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    calculateMiningPerMinute();
-                                }
+                            sleep(60 * 1000);
+                            handler.post(() -> {
+                                calculateMiningPerMinute();
+                                //sharedPreferences.edit().putInt("miningPerMinute", calculateMiningPerMinute()).apply();
                             });
                         }
                     } catch (InterruptedException e) {
@@ -376,34 +414,93 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             };
             thread.start();
         }
+        //updateTextBalance();
     }
+
+
+    //Функция возвращения значения сатоши в минуту
     private void calculateMiningPerMinute(){
         //Извлекаю процент буста (ускорения)
         int boost = sharedPreferences.getInt("boost", 1);
+        Log.e("BOOST: ", String.valueOf(boost));
         //Извлечение пинга и его рассчет
         int ping = (50 - sharedPreferences.getInt("ping", 1))/2;
-        int zk = 1;
-        int balance = sharedPreferences.getInt ("balance", 0);
-        int newBalance = 0;
-        if(balance == 0){
-            balance = binding.getUser().getValue();
-            newBalance = binding.getUser().getValue() + (zk * (1 + (boost/100)) * ping);
-        } else {
-            newBalance = balance + (zk * (1 + (boost/100)) * ping);
-        }
-        float balanceBtc = ((float) binding.getUser().getValue() / 100000000F);
-
+        Log.e("PING: ", String.valueOf(ping));
+        int zk = sharedPreferences.getInt("miningPerMinute", 1000);
+        Log.e("miningPerMinute: ", String.valueOf(zk));
+        int miningPerMinute =  (zk * (1 + (boost/100)) * (1 + ping/100));
+        int balance = sharedPreferences.getInt ("balance", binding.getUser().getValue());
+        int newBalance = balance + miningPerMinute;
+        Log.e("newBalance: ", String.valueOf(newBalance));
         //Сохраняем значениее баланса
         sharedPreferences.edit().putInt("balance", newBalance).apply();
+        sharedPreferences.edit().putInt("miningPerMinute", miningPerMinute).apply();
         binding.getUser().setValue(newBalance);
-        final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, balance += (newBalance - balance));
+        //Анимация счета
+        final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balance / 100000000F, newBalance / 100000000F);
+        animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format(getResources().getString(R.string.value_float_btc), (float) animatorBtc.getAnimatedValue())));
+        animatorBtc.start();
+        final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, newBalance);
         animatorSatoshi.addUpdateListener(animation -> binding.bigTextBalance.setText(animatorSatoshi.getAnimatedValue().toString()));
         animatorSatoshi.start();
-        //final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balanceBtc, balanceBtc += ((newBalance - balance) / 100000000F));
-       // animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format("%.8f",animatorBtc.getAnimatedValue().toString())));
-       // animatorBtc.start();
+        binding.getUser().setValue(newBalance);
+        //Обновление баланса пользователя на сервере
         //updateBalanceUser(newBalance);
     }
+
+    //Анимированное обновление текста баланса
+    private void updateTextBalance(){
+        Handler handler = new Handler();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        sleep(500);
+                        handler.post(() -> {
+                            int balance = sharedPreferences.getInt ("balance", binding.getUser().getValue());
+                            Log.e("BALANCE IN TEST", String.valueOf(balance));
+                            int newBalance = balance + 1;
+                            sharedPreferences.edit().putInt("balance", newBalance).apply();
+                            //Анимация счета
+                            final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balance / 100000000F, newBalance / 100000000F);
+                            animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format(getResources().getString(R.string.value_float_btc), (float) animatorBtc.getAnimatedValue())));
+                            //animatorBtc.setDuration(60000);
+                            animatorBtc.start();
+                            final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, newBalance);
+                            animatorSatoshi.addUpdateListener(animation -> binding.bigTextBalance.setText(animatorSatoshi.getAnimatedValue().toString()));
+                            animatorSatoshi.start();
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
+    }
+    private void updateBalanceUser(int newBalance){
+        Call<StatusMessage> balanceCall = apiService
+                .sendBalance(binding.getUser().getEmail(), newBalance);
+
+        balanceCall.enqueue(new Callback<StatusMessage>() {
+            @Override
+            public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
+                if(response.isSuccessful()){
+                    assert response.body() != null;
+                    if(response.body().getSuccess() == 1){
+                        Log.e("BALANCE UPDATE", "БАЛАНС ОБНОВЛЕН");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
+                Log.e("BALANCE UPDATE", "БАЛАНС НЕ ОБНОЛЕН");
+            }
+        });
+    }
+
 
     //Смена сервера
     private void changeServer(int numberClickServer){
@@ -443,6 +540,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         ImageView imgCross = dialog.findViewById(R.id.img_cross);
         //Обработка нажатия на кнопку "ОК"
         btn_ok.setOnClickListener(v -> {
+            //Вызов просмотра рекламы
             UnityAds.load(adUnitId, loadListener);
             UnityAds.show(MainActivity.this, adUnitId, showListener);
             dialog.cancel();

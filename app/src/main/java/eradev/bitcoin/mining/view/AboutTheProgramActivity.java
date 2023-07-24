@@ -1,6 +1,7 @@
 package eradev.bitcoin.mining.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -9,12 +10,9 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,11 +22,11 @@ import eradev.bitcoin.mining.checkNetwork.NetworkChangeListener;
 import eradev.bitcoin.mining.data.local.App;
 import eradev.bitcoin.mining.data.local.BitcoinMiningDB;
 import eradev.bitcoin.mining.data.local.entity.StartScreenEntity;
+import eradev.bitcoin.mining.databinding.ActivityAboutTheProgramBinding;
 
 public class AboutTheProgramActivity extends AppCompatActivity {
 
-    Button btnNext;
-    TextView tvMain;
+    private ActivityAboutTheProgramBinding binding;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
 
     @Override
@@ -39,28 +37,16 @@ public class AboutTheProgramActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        btnNext = findViewById(R.id.btn_next);
-        tvMain = findViewById(R.id.tv_main_text);
-
         //Получаю данные из интента
         Intent intent = getIntent();
 
         boolean userCreate = intent.getBooleanExtra("USER_CREATE", false);
 
-        BitcoinMiningDB db = App.getInstance().getDatabase();
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        executorService.execute(() -> handler.post(() -> {
-            StartScreenEntity startScreenEntity = db.startScreenDAO().getInfoStartScreen(0);
-            tvMain.setText(startScreenEntity.getMainText());
-            btnNext.setText(startScreenEntity.getButtonText());
-        }));
+        //Загрузка данных в dataBinding
+        loadDataBinding();
 
         //Обработка кнопки Продолжить
-        btnNext.setOnClickListener(v -> {
+        binding.btnNext.setOnClickListener(v -> {
             Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
             v.startAnimation(scale);
             //если пользователь создан переход на главныый экран, иначе на регистрацию
@@ -71,6 +57,22 @@ public class AboutTheProgramActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    //Загрузка данных в DataBinding
+    private void loadDataBinding(){
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_about_the_program);
+
+        BitcoinMiningDB db = App.getInstance().getDatabase();
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executorService.execute(() -> handler.post(() -> {
+            StartScreenEntity startScreenEntity = db.startScreenDAO().getInfoStartScreen(0);
+            binding.setStartScreen(startScreenEntity);
+        }));
     }
 
     @Override
