@@ -17,10 +17,13 @@ public class User {
     private Integer value;
     @SerializedName("mining_is_started")
     private Integer mining_is_started;
+
+    @SerializedName("daily")
+    String daily;
     @SerializedName("boost")
     String boost;
 
-    public User(String email, String entered_code, String ref_code, Integer ref_value, String server_time, Integer value, Integer mining_is_started, String boost) {
+    public User(String email, String entered_code, String ref_code, Integer ref_value, String server_time, Integer value, Integer mining_is_started, String daily, String boost) {
         this.email = email;
         this.entered_code = entered_code;
         this.ref_code = ref_code;
@@ -29,6 +32,7 @@ public class User {
         this.value = value;
         this.mining_is_started = mining_is_started;
         this.boost = boost;
+        this.daily = daily;
     }
 
     public String getBoost() {
@@ -93,5 +97,13 @@ public class User {
 
     public void setMining_is_started(Integer mining_is_started) {
         this.mining_is_started = mining_is_started;
+    }
+
+    public String getDaily() {
+        return daily;
+    }
+
+    public void setDaily(String daily) {
+        this.daily = daily;
     }
 }

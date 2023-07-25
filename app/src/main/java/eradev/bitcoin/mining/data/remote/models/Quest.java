@@ -32,11 +32,11 @@ public class Quest {
     @Expose
     private Boolean repeat;
 
-    @SerializedName("test")
+    @SerializedName("code")
     @Expose
-    private String test;
+    private String code;
 
-    public Quest(String title, Integer number, Integer weight, String text, String url, String imageUrl, Boolean repeat, String test) {
+    public Quest(String title, Integer number, Integer weight, String text, String url, String imageUrl, Boolean repeat, String code) {
         this.title = title;
         this.number = number;
         this.weight = weight;
@@ -44,7 +44,7 @@ public class Quest {
         this.url = url;
         this.imageUrl = imageUrl;
         this.repeat = repeat;
-        this.test = test;
+        this.code = code;
     }
 
     public String getTitle() {
@@ -103,11 +103,11 @@ public class Quest {
         this.repeat = repeat;
     }
 
-    public String getTest() {
-        return test;
+    public String getCode() {
+        return code;
     }
 
-    public void setTest(String test) {
-        this.test = test;
+    public void setCode(String code) {
+        this.code = code;
     }
 }

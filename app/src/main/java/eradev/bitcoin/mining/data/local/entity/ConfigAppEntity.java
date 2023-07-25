@@ -72,7 +72,7 @@ public class ConfigAppEntity {
         this.dialogUrl = configAppModel.getDialogUrl();
         this.dailyWeight = configAppModel.getDailyWeight();
         this.referalWeight = configAppModel.getReferalWeight();
-        this.dailyBonus = getDailyBonus();
+        this.dailyBonus = configAppModel.getDailyBonus();
         this.referalBonus = configAppModel.getReferalBonus();
         this.courseToUSTD = configAppModel.getCourseToUSTD();
     }

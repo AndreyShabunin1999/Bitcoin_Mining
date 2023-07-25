@@ -71,6 +71,14 @@
     <string name="text_take_btc">TAKE BTC</string>
     <string name="text_btn_quest_url">перейти</string>
     <string name="text_btn_quest_satoshi">%d Satoshi</string>
-    <string name="text_btn_right_quest_var1">получить</string>
-    <string name="text_btn_right_quest_var2">перейти</string>
+    <string name="text_btn_right_quest_var1">Получить</string>
+    <string name="text_btn_right_quest_var2">Перейти</string>
+    <string name="text_title_evr_quest">Ежедневный бонус</string>
+    <string name="text_description_evr_quest">Заходите в игру каждый день\nПолучайте приятный бонус!</string>
+    <string name="text_type_evr_quest">surprise</string>
+    <string name="text_title_ref_quest">Приглашайте друзей</string>
+    <string name="text_description_ref_quest">За каждого приглашенного друга\nвы будете получать вознаграждения</string>
+    <string name="text_type_ref_quest">share</string>
+    <string name="text_code_quest">test</string>
+    <string name="intent_share">Майни как я или даже лучше в приложении https://play.google.com/store/apps/details?id=%s, вводи мой реферальный код %s и получай сатоши”</string>
 </resources>

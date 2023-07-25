@@ -46,6 +46,9 @@ public class UserEntity {
     @ColumnInfo(name = "mining_is_started")
     Integer mining_is_started;
 
+    @ColumnInfo(name = "daily")
+    String daily;
+
     @ColumnInfo(name = "boost")
     String boost;
 
@@ -65,6 +68,7 @@ public class UserEntity {
         this.server_time = "";
         this.mining_is_started = 0;
         this.boost = "";
+        this.daily = "";
     }
 
     public UserEntity(User user, String password) {
@@ -78,6 +82,7 @@ public class UserEntity {
         this.value = user.getValue();
         this.mining_is_started = user.getMining_is_started();
         this.boost = user.getBoost();
+        this.daily = user.getDaily();
     }
 
     public String getEmail() {
@@ -158,5 +163,13 @@ public class UserEntity {
 
     public void setMining_is_started(Integer mining_is_started) {
         this.mining_is_started = mining_is_started;
+    }
+
+    public String getDaily() {
+        return daily;
+    }
+
+    public void setDaily(String daily) {
+        this.daily = daily;
     }
 }

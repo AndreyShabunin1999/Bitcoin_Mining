@@ -1,5 +1,5 @@
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="quest"
@@ -8,7 +8,9 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,22 +19,28 @@
             android:weightSum="4">
 
             <LinearLayout
+                android:id="@+id/linear_quest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3.9"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="7dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/quest_item_var2"
+                android:layout_marginBottom="4dp"
+                android:paddingBottom="2.4dp"
+                android:paddingEnd="2.6dp"
+                android:paddingTop="2.6dp"
+                android:paddingStart="2.6dp"
+                android:background="@drawable/quest_item_var1"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <ImageView
+                    android:id="@+id/img_quest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/round_btn_quest"
+                    android:background="@drawable/round_btn_quest_var1"
                     android:padding="20dp"
-                    android:src="@drawable/suprize" />
+                    app:imageUrl="@{quest.imageUrl}" />
 
                 <LinearLayout
                     android:id="@+id/linearLayoutQuestDescription"
@@ -42,11 +50,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_name_quest"
+                        android:id="@+id/tv_title_quest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:textAlignment="center"
                         android:layout_marginTop="14dp"
+                        android:layout_marginEnd="4dp"
                         android:text="@{quest.title}"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -56,22 +66,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="4dp"
                         android:text="@{quest.text}"
                         android:textAlignment="center"
                         android:textSize="16sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/text_activity"
+                        android:id="@+id/btn_activity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/gradient_linearlayout_balance"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/gradient_btn_in_quest_var1"
                         android:paddingStart="60dp"
                         android:paddingEnd="60dp"
                         android:text="@{quest.number == 0 ? @string/text_btn_quest_url : @string/text_btn_quest_satoshi(quest.number)}"
-                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -79,24 +89,25 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/linear_out_btn"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="7dp"
-                android:layout_marginBottom="4dp"
-                android:paddingStart="-7dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="5dp"
+                android:paddingStart="-5dp"
                 android:paddingEnd="-7dp"
-                android:background="@drawable/quest_item_var2">
+                android:gravity="center"
+                android:background="@drawable/btn_out_quest_var1">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_btn_out_activity"
+                    android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:rotation="90"
-                    android:text="Получить"/>
+                    android:textSize="14sp"
+                    android:textAlignment="center"
+                    android:text="@{quest.number == 0 ? @string/text_btn_right_quest_var2 : @string/text_btn_right_quest_var1}"/>
             </LinearLayout>
-
-
-
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </layout>

@@ -26,6 +26,9 @@ public interface UserDAO {
     @Query("SELECT * FROM User WHERE id = :id")
     Single<UserEntity> getSingleUser(int id);
 
+    @Query("SELECT ref_code FROM User LIMIT 1")
+    String getRefCode();
+
     @Query("SELECT email FROM User WHERE id = :id")
     String getEmailUser(int id);
 

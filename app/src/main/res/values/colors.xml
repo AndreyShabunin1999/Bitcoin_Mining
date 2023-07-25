@@ -18,4 +18,6 @@
     <color name="transparent">#00ff0000</color>
     <color name="color_text_acceleration">#171224</color>
     <color name="color_text_ping">#3F8DE5</color>
+    <color name="text_title_quest_var2">#99ABD4</color>
+    <color name="text_title_quest_var1">#E6158D</color>
 </resources>

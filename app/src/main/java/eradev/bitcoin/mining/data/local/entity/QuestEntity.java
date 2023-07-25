@@ -26,10 +26,10 @@ public class QuestEntity {
     private String imageUrl;
     @ColumnInfo(name = "repeat")
     private Boolean repeat;
-    @ColumnInfo(name = "test")
-    private String test;
+    @ColumnInfo(name = "code")
+    private String code;
 
-    public QuestEntity(Integer id, String title, Integer number, Integer weight, String text, String url, String imageUrl, Boolean repeat, String test) {
+    public QuestEntity(Integer id, String title, Integer number, Integer weight, String text, String url, String imageUrl, Boolean repeat, String code) {
         this.id = id;
         this.title = title;
         this.number = number;
@@ -38,7 +38,7 @@ public class QuestEntity {
         this.url = url;
         this.imageUrl = imageUrl;
         this.repeat = repeat;
-        this.test = test;
+        this.code = code;
     }
 
     public QuestEntity(Quest quest, int id) {
@@ -50,7 +50,7 @@ public class QuestEntity {
         this.url = quest.getUrl();
         this.imageUrl = quest.getImageUrl();
         this.repeat = quest.getRepeat();
-        this.test = quest.getTest();
+        this.code = quest.getCode();
     }
 
     public Integer getId() {
@@ -117,11 +117,11 @@ public class QuestEntity {
         this.repeat = repeat;
     }
 
-    public String getTest() {
-        return test;
+    public String getCode() {
+        return code;
     }
 
-    public void setTest(String test) {
-        this.test = test;
+    public void setCode(String code) {
+        this.code = code;
     }
 }

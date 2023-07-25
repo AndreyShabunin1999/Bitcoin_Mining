@@ -11,6 +11,6 @@ public interface ConfigAppDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ConfigAppEntity configAppEntity);
 
-    @Query("SELECT * FROM ConfigApp WHERE id = :id")
-    ConfigAppEntity getInfoApp(int id);
+    @Query("SELECT * FROM ConfigApp LIMIT 1")
+    ConfigAppEntity getInfoApp();
 }

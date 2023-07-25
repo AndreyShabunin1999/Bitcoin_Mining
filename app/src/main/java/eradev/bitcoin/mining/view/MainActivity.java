@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
             executorService.execute(() -> handler.post(() -> {
-                ConfigAppEntity configApp = db.configAppDao().getInfoApp(0);
+                ConfigAppEntity configApp = db.configAppDao().getInfoApp();
                 saveValueSP(Integer.parseInt(configApp.getMinBoost()), Integer.parseInt(configApp.getMaxBoost()), boost, Integer.parseInt(configApp.getMiningPerMinute()));
             }));
         } else {

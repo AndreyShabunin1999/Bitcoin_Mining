@@ -68,4 +68,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("update_value_mining.php")
     Call<StatusMessage> sendBalance(@Field("email") String email, @Field("value") int value);
+
+    //Установка времени использования ежедневного бонуса
+    @FormUrlEncoded
+    @POST("update_daily.php")
+    Call<StatusMessage> sendDailyBonus(@Field("email") String email);
 }

@@ -14,7 +14,7 @@ import eradev.bitcoin.mining.data.local.entity.StartScreenEntity;
 import eradev.bitcoin.mining.data.local.entity.AdsEntity;
 import eradev.bitcoin.mining.data.local.entity.UserEntity;
 
-@Database(entities = {UserEntity.class, StartScreenEntity.class, ConfigAppEntity.class, QuestEntity.class, AdsEntity.class}, version = 13)
+@Database(entities = {UserEntity.class, StartScreenEntity.class, ConfigAppEntity.class, QuestEntity.class, AdsEntity.class}, version = 15)
 public abstract class BitcoinMiningDB extends RoomDatabase {
     public abstract UserDAO userDAO();
 
