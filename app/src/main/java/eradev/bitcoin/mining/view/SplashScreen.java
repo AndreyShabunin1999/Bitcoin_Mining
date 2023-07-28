@@ -111,6 +111,7 @@ public class SplashScreen extends AppCompatActivity {
                         Handler handler = new Handler(Looper.getMainLooper());
                         executorService.execute(() -> handler.post(() -> {
                             for(int i = 0; i < Objects.requireNonNull(response.body()).getQuests().size(); i++){
+                                Log.e("QUEST SPLASH", response.body().getQuests().get(i).getCode());
                                 db.questDAO().insert(new QuestEntity(response.body().getQuests().get(i), i));
                             }
                         }));
@@ -212,7 +213,7 @@ public class SplashScreen extends AppCompatActivity {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executorService.execute(() -> handler.post(() -> db.userDAO().updateUser(0, user.getEmail(),
-                user.getEntered_code(), user.getRef_code(), user.getRef_value(), user.getServer_time(),user.getValue(), user.getMining_is_started(), user.getBoost())));
+                user.getEntered_code(), user.getRef_code(), user.getRef_value(), user.getServer_time(),user.getValue(), user.getMining_is_started(), user.getTask(), user.getDaily(), user.getBoost())));
     }
 
     public void updateUserDB(UserEntity user){
@@ -232,6 +233,8 @@ public class SplashScreen extends AppCompatActivity {
             public void onResponse(@NonNull Call<Users> call, @NonNull Response<Users> response) {
                 if(response.isSuccessful()){
                     assert response.body() != null;
+
+                    Log.e("TEST", response.body().getUsers().get(0).getTask());
                     //обновляем данные о пользователе в БД
                     updateUserDB(response.body().getUsers().get(0));
                     // Если пользователь есть на сервере

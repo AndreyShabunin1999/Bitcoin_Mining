@@ -73,4 +73,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("update_daily.php")
     Call<StatusMessage> sendDailyBonus(@Field("email") String email);
+
+    //Выполнение задания
+    @FormUrlEncoded
+    @POST("update_tasks.php")
+    Call<StatusMessage> sendTasks(@Field("email") String email, @Field("tasks") String tasks);
 }

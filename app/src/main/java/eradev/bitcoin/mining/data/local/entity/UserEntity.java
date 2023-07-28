@@ -46,9 +46,15 @@ public class UserEntity {
     @ColumnInfo(name = "mining_is_started")
     Integer mining_is_started;
 
+    //список уникальных ид через разделитель «|» для проверки на equals выполнялось ли задание
+    @ColumnInfo(name = "task")
+    String task;
+
+    //таймстемп, дата выполнения последнего ежедневного задания по времени сервера
     @ColumnInfo(name = "daily")
     String daily;
 
+    //таймстемп, дата последнего ускорения, нужна для просчета времени последнего буста, по времени сервера
     @ColumnInfo(name = "boost")
     String boost;
 
@@ -69,6 +75,7 @@ public class UserEntity {
         this.mining_is_started = 0;
         this.boost = "";
         this.daily = "";
+        this.task = "";
     }
 
     public UserEntity(User user, String password) {
@@ -83,6 +90,7 @@ public class UserEntity {
         this.mining_is_started = user.getMining_is_started();
         this.boost = user.getBoost();
         this.daily = user.getDaily();
+        this.task = user.getTask();
     }
 
     public String getEmail() {
@@ -164,12 +172,19 @@ public class UserEntity {
     public void setMining_is_started(Integer mining_is_started) {
         this.mining_is_started = mining_is_started;
     }
-
     public String getDaily() {
         return daily;
     }
 
     public void setDaily(String daily) {
         this.daily = daily;
+    }
+
+    public String getTask() {
+        return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 }
