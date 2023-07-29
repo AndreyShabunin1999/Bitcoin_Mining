@@ -357,7 +357,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         //Обработка нажатия кнопки "Take BTC"
         takeBtcBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, QuestsActivity.class)));
 
-
         //checkTime();
 
     }

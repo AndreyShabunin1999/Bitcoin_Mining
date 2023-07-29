@@ -23,6 +23,7 @@
     <string name="text_start_btn">Start</string>
     <string name="text_your_balance">YOUR BALANCE</string>
     <string name="text_satoshi">&#160;Satoshi</string>
+    <string name="text_default_satoshi">Satoshi</string>
     <string name="text_btn_boost">BOOST</string>
     <string name="text_btn_take_to_btc">TAKE BTC</string>
     <string name="text_content_progressBar">0%</string>
@@ -82,4 +83,10 @@
     <string name="text_send_ref">Пригласить</string>
     <string name="text_delimiter">%s|</string>
     <string name="intent_share">Майни как я или даже лучше в приложении https://play.google.com/store/apps/details?id=%s, вводи мой реферальный код %s и получай сатоши”</string>
+    <string name="text_top_linear_referal">Рефералы</string>
+    <string name="text_your_ref_code">Your ref code</string>
+    <string name="central_text_referal">Вы можете приглашать ваших друзей\n Без каких-либо ограничений\n Больше друзей, больше ваша прибыль от них!</string>
+    <string name="text_referral_income">Доход с рефералов</string>
+    <string name="text_count_ref">Всего рефералов</string>
+    <string name="default_count_ref">0</string>
 </resources>

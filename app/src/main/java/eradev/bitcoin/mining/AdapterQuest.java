@@ -87,7 +87,7 @@ public class AdapterQuest extends RecyclerView.Adapter<AdapterQuest.MyViewHolder
         //Обработка нажатия по значку поделиться приложением
         holder.bindingQuest.imgQuest.setOnClickListener(v -> {
             //Если пользователь нажал по значку поделиться на реферальном задании
-            if(Objects.equals(questList.get(position).getImageUrl(), context.getString(R.string.text_type_ref_quest))) {
+            if(Objects.equals(questList.get(position).getCode(), context.getString(R.string.text_your_ref_code))) {
                 try {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");

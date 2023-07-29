@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import eradev.bitcoin.mining.data.remote.models.ConfigAppModel;
 import eradev.bitcoin.mining.data.remote.models.QuestsModel;
+import eradev.bitcoin.mining.data.remote.models.Referals;
 import eradev.bitcoin.mining.data.remote.models.StartScreenModel;
 import eradev.bitcoin.mining.data.remote.models.StatusMessage;
 import eradev.bitcoin.mining.data.remote.models.UnityAdsModel;
@@ -74,8 +75,13 @@ public interface ApiService {
     @POST("update_daily.php")
     Call<StatusMessage> sendDailyBonus(@Field("email") String email);
 
-    //Выполнение задания
+    //Получение данных о рефералах
     @FormUrlEncoded
     @POST("update_tasks.php")
     Call<StatusMessage> sendTasks(@Field("email") String email, @Field("tasks") String tasks);
+
+    //Выполнение задания
+    @FormUrlEncoded
+    @POST("get_referals_list.php")
+    Call<Referals> getReferals(@Field("ref_code ") String ref_cod);
 }
