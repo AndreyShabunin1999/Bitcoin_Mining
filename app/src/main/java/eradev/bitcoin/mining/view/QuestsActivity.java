@@ -56,7 +56,7 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView_quest);
         Button btnBack = findViewById(R.id.btn_back);
-        sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("MySP", MODE_PRIVATE);
         apiService = Servicey.getPromoMinerApi();
 
         db = App.getInstance().getDatabase();
@@ -182,6 +182,7 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
                             updateTaskUser(newTasks);
                             adapterQuest.notifyDataSetChanged();
                         }
+                        clearSharedPref();
                     }
                 }
             }
@@ -204,7 +205,6 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
                         ExecutorService executorService = Executors.newSingleThreadExecutor();
                         Handler handler = new Handler(Looper.getMainLooper());
                         executorService.execute(() -> handler.post(() -> db.userDAO().updateBalanceFromUser(0,newBalance)));
-                        clearSharedPref();
                     }
                 }
             }
@@ -265,6 +265,7 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
         } else {
             db.userDAO().updateTasksFromUser(0, code);
         }
+        user = db.userDAO().getUser(0);
     }
 }
 

@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:layout_gravity="end"
-                android:text=""
+                android:text="@{user.mining_is_started == 1 ? @string/text_conclusion_balance_up : @string/text_empty}"
                 android:textColor="@color/white"/>
         </LinearLayout>
 

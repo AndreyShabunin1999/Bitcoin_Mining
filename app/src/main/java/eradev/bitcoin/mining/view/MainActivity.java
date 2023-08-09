@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -35,6 +36,8 @@ import com.unity3d.ads.UnityAdsShowOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -75,10 +78,13 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     //Для различия за что вознаграждение true - boost, false - смена сервера
     private boolean rewardAfterAds;
     private int clickServer;
+    private Integer minimalSummToWithdraw;
     private Dialog dialog;
+    private boolean miningJob = false;
     SharedPreferences sharedPreferences;
     BitcoinMiningDB db;
     ApiService apiService;
+    Thread threadMining;
 
     private final String unityGameID = "5350565";
     private final Boolean testMode = true;
@@ -195,20 +201,28 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     private void saveValueSP(int minBoost, int maxBoost, int currentBoost, int... miningPerMinute){
         //Сохранение новых значений
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        minBoost = (int) (minBoost * 0.9);
-        maxBoost = (int) (maxBoost * 0.9);
+        int tempMinBoost = (int) (minBoost * 0.9);
+        int tempMaxBoost = (int) (maxBoost * 0.9);
+
         //Значение минимального буста не может быть меньше 3
         if(minBoost > 3){
+            minBoost = tempMinBoost;
             myEdit.putInt("minBoost", minBoost);
         }
         //Значение максимального буста не может быть меньше 6
         if(maxBoost > 6){
+            maxBoost = tempMaxBoost;
             myEdit.putInt("maxBoost", maxBoost);
         }
+
+        int newBoost = calculateRandom(minBoost, maxBoost) + currentBoost;
+        myEdit.putInt("boost", newBoost);
+
+        boostBtn.setText(String.format(getResources().getString(R.string.text_btn_boost_value), newBoost));
+
         if(miningPerMinute != null){
             myEdit.putInt("miningPerMinute", miningPerMinute[0]).apply();
         }
-        myEdit.putInt("boost", calculateRandom(minBoost, maxBoost) + currentBoost);
         myEdit.apply();
     }
 
@@ -279,6 +293,14 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         }
     }
 
+    private void getMinSumToWithdraw(){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executorService.execute(() -> handler.post(() -> {
+            minimalSummToWithdraw = Integer.parseInt(db.configAppDao().getMinSumToWithdraw());
+        }));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -292,6 +314,8 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         apiService = Servicey.getPromoMinerApi();
         sharedPreferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
         dialog = new Dialog(MainActivity.this);
+        //Получение минимальной суммы для вывода
+        getMinSumToWithdraw();
 
         //Загрузка данных в dataBinding
         loadDataBinding();
@@ -309,38 +333,48 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         calculatePing();
 
         startBtn.setOnClickListener(v -> {
-            Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
-            v.startAnimation(scale);
 
-            startBtn.setText(R.string.text_after_start_btn);
+            if(binding.getUser().getMining_is_started() == 0){
+                Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
+                v.startAnimation(scale);
 
-            tv_conclusion_balance.setText(R.string.text_conclusion_balance_up);
-            tv_duplicate_progress.setText(R.string.text_progress_string_up);
+                startBtn.setText(R.string.text_after_start_btn);
 
-            Call<StatusMessage> startMiningCall = apiService
-                    .startMining(binding.getUser().getEmail());
-            startMiningCall.enqueue(new Callback<StatusMessage>() {
-                @Override
-                public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
-                    if(response.isSuccessful()){
-                        assert response.body() != null;
-                        if(response.body().getSuccess() == 1){
-                            Toast.makeText(MainActivity.this, R.string.text_start_mining, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(MainActivity.this, "Mining" + binding.getUser().getMining_is_started(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, R.string.text_error_start_mining, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(MainActivity.this, "Mining" + binding.getUser().getMining_is_started(), Toast.LENGTH_SHORT).show();
-                            startBtn.setText(R.string.text_start_btn);
+                tv_conclusion_balance.setText(R.string.text_conclusion_balance_up);
+                tv_duplicate_progress.setText(R.string.text_progress_string_up);
+
+                Call<StatusMessage> startMiningCall = apiService
+                        .startMining(binding.getUser().getEmail());
+                startMiningCall.enqueue(new Callback<StatusMessage>() {
+                    @Override
+                    public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
+                        if(response.isSuccessful()){
+                            assert response.body() != null;
+                            if(response.body().getSuccess() == 1){
+                                Log.e("YA TUT", "PRIVET");
+                                binding.getUser().setMining_is_started(response.body().getSuccess());
+                                miningJob = true;
+                                processMining();
+                            } else {
+                                startBtn.setText(R.string.text_start_btn);
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
-                    Toast.makeText(MainActivity.this, R.string.text_start_mining, Toast.LENGTH_SHORT).show();
-                    startBtn.setText(R.string.text_start_btn);
-                }
-            });
+                    @Override
+                    public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
+                        startBtn.setText(R.string.text_start_btn);
+                    }
+                });
+            } else {
+                Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
+                intent.putExtra("balance", binding.getUser().getValue());
+                intent.putExtra("minimalSummToWithdraw", minimalSummToWithdraw);
+                intent.putExtra("email", binding.getUser().getEmail());
+                startActivity(intent);
+            }
+
+
         });
 
         // Переключение серверов
@@ -357,53 +391,58 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         //Обработка нажатия кнопки "Take BTC"
         takeBtcBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, QuestsActivity.class)));
 
-        //checkTime();
+       //checkTime();
 
     }
 
-    private void checkTime() {
-        //Если буст не активирован (так как значение 1 только у неактивированного)
-        if(sharedPreferences.getInt("boost", 1) == 1){
-            Date dateLastOnline = null;
-            try {
-                dateLastOnline = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).parse(sharedPreferences.getString("lastTimeOnline",""));
-            } catch (ParseException ignored){
-
-            }
-            int minutes = checkOfflineTimeMining(dateLastOnline, Calendar.getInstance().getTime());
-            //Высчитываем новый баланс пользователя
-            //int newBalance = binding.getUser().getValue() + (minutes * calculateMiningPerMinute());
-            //Обновляем данные о балансе пользователя на сервере
-            //updateBalanceUser(newBalance);
-            //Сохраняем локально на время работы приложения
-         //   sharedPreferences.edit().putInt("balance", newBalance).apply();
-        } else {
-
-        }
-    }
-    //Функция
-    private int checkOfflineTimeMining(Date date1, Date date2) {
-        Log.e("DATE2 FUNC", String.valueOf(date2));
-        Log.e("DATE1 FUNC", String.valueOf(date1));
-        //-3 из-за разницы во времени с сервером
-        //int diffHours = (int) (((date2.getTime() - date1.getTime()) / (60 * 60 * 1000)) - 3);
-        //-180 из-за разницы во времени с сервером (отнимаю 3 часа)
-        return (int) (((date2.getTime() - date1.getTime()) / (60 * 1000)) - 180);
-    }
-
-    private void processMining(int isStartMining){
+    private void processMining(){
+        Log.e("YA TUTA V PROCESSE","");
         //Если майнинг запущен запускаем цикл счета майнинга
-        if(isStartMining == 1){
+        if(binding.getUser().getMining_is_started() == 1){
+            Log.e("POLET NORM","");
+            //скорость в минуту
+            int miningPerMinute = calculateMiningPerMinute();
+            Log.e("SPEED", String.valueOf(miningPerMinute));
+            Log.e("VALUE", String.valueOf((60/miningPerMinute) * 1000));
+            float b = (float) 60/miningPerMinute * 1000;
+            Log.e("VALUE_B", String.valueOf(b));
             Handler handler = new Handler();
-            Thread thread = new Thread() {
+            threadMining = new Thread() {
                 @Override
                 public void run() {
                     try {
-                        while(true) {
-                            sleep(60 * 1000);
+                        while(miningJob) {
+                            sleep((int) b);
                             handler.post(() -> {
-                                calculateMiningPerMinute();
-                                //sharedPreferences.edit().putInt("miningPerMinute", calculateMiningPerMinute()).apply();
+                                int balance = binding.getUser().getValue();
+                                int newBalance = balance + 1;
+                                //Сохраняем значениее баланса
+                                binding.getUser().setValue(newBalance);
+                                //Анимация счета
+                                final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balance / 100000000F, newBalance / 100000000F);
+                                animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format(getResources().getString(R.string.value_float_btc), (float) animatorBtc.getAnimatedValue())));
+                                animatorBtc.start();
+
+                                final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, newBalance);
+                                animatorSatoshi.addUpdateListener(animation -> binding.bigTextBalance.setText(animatorSatoshi.getAnimatedValue().toString()));
+                                animatorSatoshi.start();
+
+                                Point maxSizePoint = new Point();
+                                getWindowManager().getDefaultDisplay().getSize(maxSizePoint);
+                                final int maxX = maxSizePoint.x;
+
+                                int progressStatus = ((minimalSummToWithdraw - newBalance) / (minimalSummToWithdraw + newBalance) / 2) * 100;
+                                if((newBalance > 1) && (progressStatus < 1)){
+                                    progressStatus = 1;
+                                }
+
+                                binding.progressBar.setProgress(1);
+                                int val = (progressStatus * (binding.progressBar.getWidth() - 2 )) / binding.progressBar.getMax();
+                                int textViewX = val - (binding.tvProgress.getWidth() / 2);
+                                int finalX = binding.tvProgress.getWidth() + textViewX > maxX ? (maxX - binding.tvProgress.getWidth() - 30) : textViewX + 30;
+                                binding.tvProgress.setX(finalX < 0 ? 30 : finalX);
+                                binding.tvProgress.setText(getResources().getString(R.string.process_progress,  progressStatus));
+                                binding.tvDuplicateProgress.setText(getResources().getString(R.string.process_progress,  progressStatus));
                             });
                         }
                     } catch (InterruptedException e) {
@@ -411,73 +450,20 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                     }
                 }
             };
-            thread.start();
+            threadMining.start();
         }
-        //updateTextBalance();
     }
-
 
     //Функция возвращения значения сатоши в минуту
-    private void calculateMiningPerMinute(){
+    private int calculateMiningPerMinute(){
         //Извлекаю процент буста (ускорения)
         int boost = sharedPreferences.getInt("boost", 1);
-        Log.e("BOOST: ", String.valueOf(boost));
         //Извлечение пинга и его рассчет
         int ping = (50 - sharedPreferences.getInt("ping", 1))/2;
-        Log.e("PING: ", String.valueOf(ping));
-        int zk = sharedPreferences.getInt("miningPerMinute", 1000);
-        Log.e("miningPerMinute: ", String.valueOf(zk));
-        int miningPerMinute =  (zk * (1 + (boost/100)) * (1 + ping/100));
-        int balance = sharedPreferences.getInt ("balance", binding.getUser().getValue());
-        int newBalance = balance + miningPerMinute;
-        Log.e("newBalance: ", String.valueOf(newBalance));
-        //Сохраняем значениее баланса
-        sharedPreferences.edit().putInt("balance", newBalance).apply();
-        sharedPreferences.edit().putInt("miningPerMinute", miningPerMinute).apply();
-        binding.getUser().setValue(newBalance);
-        //Анимация счета
-        final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balance / 100000000F, newBalance / 100000000F);
-        animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format(getResources().getString(R.string.value_float_btc), (float) animatorBtc.getAnimatedValue())));
-        animatorBtc.start();
-        final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, newBalance);
-        animatorSatoshi.addUpdateListener(animation -> binding.bigTextBalance.setText(animatorSatoshi.getAnimatedValue().toString()));
-        animatorSatoshi.start();
-        binding.getUser().setValue(newBalance);
-        //Обновление баланса пользователя на сервере
-        //updateBalanceUser(newBalance);
+        int zk = sharedPreferences.getInt("miningPerMinute", 120);
+        return (zk * (1 + (boost/100)) * (1 + ping/100));
     }
 
-    //Анимированное обновление текста баланса
-    private void updateTextBalance(){
-        Handler handler = new Handler();
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while(true) {
-                        sleep(500);
-                        handler.post(() -> {
-                            int balance = sharedPreferences.getInt ("balance", binding.getUser().getValue());
-                            Log.e("BALANCE IN TEST", String.valueOf(balance));
-                            int newBalance = balance + 1;
-                            sharedPreferences.edit().putInt("balance", newBalance).apply();
-                            //Анимация счета
-                            final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balance / 100000000F, newBalance / 100000000F);
-                            animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format(getResources().getString(R.string.value_float_btc), (float) animatorBtc.getAnimatedValue())));
-                            //animatorBtc.setDuration(60000);
-                            animatorBtc.start();
-                            final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, newBalance);
-                            animatorSatoshi.addUpdateListener(animation -> binding.bigTextBalance.setText(animatorSatoshi.getAnimatedValue().toString()));
-                            animatorSatoshi.start();
-                        });
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        thread.start();
-    }
     private void updateBalanceUser(int newBalance){
         Call<StatusMessage> balanceCall = apiService
                 .sendBalance(binding.getUser().getEmail(), newBalance);
@@ -499,7 +485,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             }
         });
     }
-
 
     //Смена сервера
     private void changeServer(int numberClickServer){
@@ -576,9 +561,15 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                     public void onSuccess(UserEntity userEntity) {
                         //user = userEntity;
                         binding.setUser(userEntity);
-                        checkTimeBoost();
-                        //Запуск майнинга
-                        processMining(binding.getUser().getMining_is_started());
+                        //checkTimeBoost();
+                        // Если майнинг прежде запускался
+                        Log.e("STARTMINING", String.valueOf(binding.getUser().getMining_is_started()));
+                        if(binding.getUser().getMining_is_started() == 1){
+                            checkOfflineTimeMining();
+                            Log.e("ВСЕ ХОРОШО","");
+                            miningJob = true;
+                            processMining();
+                        }
                     }
                     @Override
                     public void onError(Throwable e) {}
@@ -626,13 +617,63 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     protected void onStart() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeListener, filter);
+        if(threadMining != null){
+            checkOfflineTimeMining();
+            miningJob = true;
+            processMining();
+        }
         super.onStart();
+    }
+
+    //Функция
+    private void checkOfflineTimeMining() {
+        //Дата выходав офлайн майнинг
+        long stopMining = sharedPreferences.getLong("dateStopMining", 0L);
+        if(stopMining != 0L){
+            Date dateStopMining = new Date(stopMining);
+            //текущее время
+            Date dateRestart = new Date();
+            Log.e("DATE2", String.valueOf(dateRestart));
+            //Расчет разницы в секундах
+            long diffSeconds = (((dateRestart.getTime() - dateStopMining.getTime()) / 1000));
+            Log.e("diffSeconds", String.valueOf(diffSeconds));
+            //Достаем старое значение майнинга в минуту
+            int miningPerMinute = sharedPreferences.getInt("miningPerMinute", 120);
+/*
+            //Проверка на буст
+            if(sharedPreferences.getInt("boost", 1) != 1){
+                Date date = new SimpleDateFormat("MMMM dd, yyyy").parse(binding.getUser().getBoost());
+                // parse string to date
+                LocalDate customDate = LocalDate.parse(customStr, formatter);
+            }
+
+ */
+
+            Log.e("miningPerMinute", String.valueOf(miningPerMinute));
+            long offlineBalance = (diffSeconds * (miningPerMinute/60));
+            Log.e("offlineBalance", String.valueOf(offlineBalance));
+            int oldBalance = binding.getUser().getValue();
+            Log.e("oldBalance", String.valueOf(binding.getUser().getValue()));
+            binding.getUser().setValue((int) (oldBalance + offlineBalance));
+        }
+        //Очищаем sharedPreferences
+        sharedPreferences.edit().remove("dateStopMining").apply();
+        sharedPreferences.edit().remove("miningPerMinute").apply();
     }
 
     @Override
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
-        sharedPreferences.edit().remove("balance").apply();
+        //Обновляем баланс пользователя на сервере
+        updateBalanceUser(binding.getUser().getValue());
+        //Обновление данных в БД
+        db.userDAO().updateBalanceFromUser(0, binding.getUser().getValue());
+        //запоминаем дату последнего майнинга при открытом приложении, а также значение скорости в минуту
+        Date dateStopMining = new Date();
+        sharedPreferences.edit().putLong("dateStopMining", dateStopMining.getTime()).apply();
+        sharedPreferences.edit().putInt("miningPerMinute", calculateMiningPerMinute()).apply();
+        //останавливаем визуализацию счета Satoshi
+        miningJob = false;
         super.onStop();
     }
 

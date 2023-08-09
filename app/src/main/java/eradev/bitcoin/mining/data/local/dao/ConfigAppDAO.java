@@ -13,4 +13,7 @@ public interface ConfigAppDAO {
 
     @Query("SELECT * FROM ConfigApp LIMIT 1")
     ConfigAppEntity getInfoApp();
+
+    @Query("SELECT minimalSummToWithdraw FROM ConfigApp WHERE id = 0")
+    String getMinSumToWithdraw();
 }

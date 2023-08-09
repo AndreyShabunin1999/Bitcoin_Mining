@@ -44,7 +44,6 @@ public class FragmentLogin extends Fragment {
     Button btnLogIn;
     EditText etEmail, etPassword;
     TextView tvSignInGoogle, tvSignUp;
-
     CallbackFragment callbackFragment;
 
     @Override

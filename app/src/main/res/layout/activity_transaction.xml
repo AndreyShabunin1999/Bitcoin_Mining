@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#34393F"
-    tools:context=".view.ReferalsActivity">
+    tools:context=".view.TransactionActivity">
 
     <LinearLayout
         android:id="@+id/top_linearlayout_ref"
@@ -21,7 +21,7 @@
         android:weightSum="4">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_back_ref"
+            android:id="@+id/btn_back_trans"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:paddingEnd="40dp"
-            android:text="@string/text_top_linear_referal"
+            android:text="@string/text_title_activity_transaction"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/white"
@@ -41,7 +41,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/frameLayout"
+        android:id="@+id/fragment_container_trans"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/top_linearlayout_ref"

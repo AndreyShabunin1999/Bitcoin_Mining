@@ -3,6 +3,7 @@ package eradev.bitcoin.mining.data.remote;
 import java.util.Locale;
 
 import eradev.bitcoin.mining.data.remote.models.ConfigAppModel;
+import eradev.bitcoin.mining.data.remote.models.DepositCodes;
 import eradev.bitcoin.mining.data.remote.models.QuestsModel;
 import eradev.bitcoin.mining.data.remote.models.Referals;
 import eradev.bitcoin.mining.data.remote.models.StartScreenModel;
@@ -20,68 +21,73 @@ import retrofit2.http.Path;
 public interface ApiService {
 
     //Конфиг рекламы
-    @GET("configs/v1/ads-{default}.json")
+    @GET("eradev/btc/configs/v1/ads-{default}.json")
     Call<UnityAdsModel> ads(@Path("default") String language);
 
     //Конфиг заданий
-    @GET("configs/v1/tasks-{default}.json")
+    @GET("eradev/btc/configs/v1/tasks-{default}.json")
     Call<QuestsModel> quests(@Path("default") String language);
 
     //Конфиг стартового экрана
-    @GET("configs/v1/startscreen-{default}.json")
+    @GET("eradev/btc/configs/v1/startscreen-{default}.json")
     Call<StartScreenModel> startScreen(@Path("default") String language);
 
     //Конфиг приложения
-    @GET("configs/v1/app-{default}.json")
+    @GET("eradev/btc/configs/v1/app-{default}.json")
     Call<ConfigAppModel> configApp(@Path("default") String language);
 
     //Добавление пользователя по email и паролю
     @FormUrlEncoded
-    @POST("insert_user.php")
+    @POST("eradev/btc/insert_user.php")
     Call<StatusMessage> insertUser(@Field("email") String email, @Field("password") String password);
 
     //Добавление пользователя по email через google
     @FormUrlEncoded
-    @POST("insert_user_email_only.php")
+    @POST("eradev/btc/insert_user_email_only.php")
     Call<StatusMessage> insertUserOnlyEmail(@Field("email") String email);
 
     //Получение пользователя с помощью email и пароля
     @FormUrlEncoded
-    @POST("get_user.php")
+    @POST("eradev/btc/get_user.php")
     Call<Users> getUser(@Field("email") String email, @Field("password") String password);
 
     //Получение пользователя с помощью email через Google
     @FormUrlEncoded
-    @POST("get_user_google.php")
+    @POST("eradev/btc/get_user_google.php")
     Call<Users> getUserGoogle(@Field("email") String email);
 
     //Старт майнинга
     @FormUrlEncoded
-    @POST("start_minig.php")
+    @POST("eradev/btc/start_minig.php")
     Call<StatusMessage> startMining(@Field("email") String email);
 
     //Буст
     @FormUrlEncoded
-    @POST("update_boost.php")
+    @POST("eradev/btc/update_boost.php")
     Call<StatusMessage> sendBoost(@Field("email") String email);
 
     //Увеличение баланса пользователя
     @FormUrlEncoded
-    @POST("update_value_mining.php")
+    @POST("eradev/btc/update_value_mining.php")
     Call<StatusMessage> sendBalance(@Field("email") String email, @Field("value") int value);
 
     //Установка времени использования ежедневного бонуса
     @FormUrlEncoded
-    @POST("update_daily.php")
+    @POST("eradev/btc/update_daily.php")
     Call<StatusMessage> sendDailyBonus(@Field("email") String email);
 
     //Получение данных о рефералах
     @FormUrlEncoded
-    @POST("update_tasks.php")
+    @POST("eradev/btc/update_tasks.php")
     Call<StatusMessage> sendTasks(@Field("email") String email, @Field("tasks") String tasks);
 
     //Выполнение задания
     @FormUrlEncoded
-    @POST("get_referals_list.php")
-    Call<Referals> getReferals(@Field("ref_code ") String ref_cod);
+    @POST("eradev/btc/get_referals_list.php")
+    Call<Referals> getReferals(@Field("ref_code") String ref_cod);
+
+    //Получение списка депосит кодов
+    @FormUrlEncoded
+    @POST("motherwallet/get_user_promcodes.php")
+    Call<DepositCodes> getDepCodes(@Field("email") String email);
 }

@@ -21,16 +21,18 @@
     <string name="text_btn_next">Продолжить</string>
     <string name="text_test">test</string>
     <string name="text_start_btn">Start</string>
-    <string name="text_your_balance">YOUR BALANCE</string>
+    <string name="text_your_balance">Your Balance</string>
     <string name="text_satoshi">&#160;Satoshi</string>
     <string name="text_default_satoshi">Satoshi</string>
     <string name="text_btn_boost">BOOST</string>
+    <string name="text_btn_boost_value">BOOST %1$d%%</string>
     <string name="text_btn_take_to_btc">TAKE BTC</string>
     <string name="text_content_progressBar">0%</string>
     <string name="text_server_1">SERVER 1</string>
     <string name="text_ping">Ping</string>
     <string name="text_value_ping_server1">12</string>
     <string name="text_ms">ms</string>
+    <string name="process_progress">%1$d %%</string>
     <string name="text_server_2">SERVER 2</string>
     <string name="text_server_3">SERVER 3</string>
     <string name="text_server_4">SERVER 4</string>
@@ -60,6 +62,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="text_progress_string_up">64%</string>
     <string name="text_conclusion_balance_up">Для вывода необходимо достигнуть 100%</string>
+    <string name="text_empty"> </string>
     <string name="text_tv_acceleration">Ускорение</string>
     <string name="text_dialog_boost">Для увеличения скорости необходимо посмотреть рекламу</string>
     <string name="text_btn_ok">OK</string>
@@ -89,4 +92,11 @@
     <string name="text_referral_income">Доход с рефералов</string>
     <string name="text_count_ref">Всего рефералов</string>
     <string name="default_count_ref">0</string>
+    <string name="text_your_referals">Ваши рефералы</string>
+    <string name="text_list_title_fragment">Ваши рефералы</string>
+    <string name="text_center_referal">Вы еще никого не пригласили...</string>
+    <string name="text_title_activity_transaction">Вывод</string>
+    <string name="text_btn_your_trans">Мои транзакции</string>
+    <string name="text_balance_usdt">Получите %d USDT</string>
+    <string name="text_name_mixer_wallet">Mixer Wallet</string>
 </resources>

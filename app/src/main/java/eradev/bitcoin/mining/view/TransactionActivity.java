@@ -1,76 +1,75 @@
 package eradev.bitcoin.mining.view;
 
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import eradev.bitcoin.mining.CallbackFragment;
 import eradev.bitcoin.mining.R;
 import eradev.bitcoin.mining.checkNetwork.NetworkChangeListener;
-import eradev.bitcoin.mining.data.remote.ApiService;
-import eradev.bitcoin.mining.data.remote.models.Referal;
-import eradev.bitcoin.mining.data.remote.models.Referals;
-import eradev.bitcoin.mining.data.remote.request.Servicey;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class ReferalsActivity extends AppCompatActivity implements CallbackFragment {
-
-    NetworkChangeListener networkChangeListener = new NetworkChangeListener();
+public class TransactionActivity extends AppCompatActivity implements CallbackFragment {
 
     Fragment fragment;
     FragmentManager fragmentManager;
-
     FragmentTransaction fragmentTransaction;
-
-    List<Referal> referalList = new ArrayList<>();
+    NetworkChangeListener networkChangeListener = new NetworkChangeListener();
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_referals);
+        setContentView(R.layout.activity_transaction);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        addFragmentReferal();
+        Button btnBack = findViewById(R.id.btn_back_trans);
 
-        Button btnBack = findViewById(R.id.btn_back_ref);
+        Intent intent = getIntent();
 
-        btnBack.setOnClickListener(v -> {
-            onBackPressed();
-        });
+        bundle = new Bundle();
+        bundle.putInt("balance", intent.getIntExtra("balance",0));
+        bundle.putInt("minimalSummToWithdraw", intent.getIntExtra("minimalSummToWithdraw",0));
+        bundle.putString("email", intent.getStringExtra("email"));
+
+        addFragmentTransaction();
+
+        btnBack.setOnClickListener(v -> onBackPressed());
     }
 
-    public void addFragmentReferal() {
-        ReferalFragment referalFragment = new ReferalFragment();
-        referalFragment.setCallbackFragment(this);
+    public void addFragmentTransaction() {
+        InfoTransactionFragment fragment = new InfoTransactionFragment();
+        fragment.setCallbackFragment(this);
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, referalFragment);
+        fragmentTransaction.add(R.id.fragment_container_trans, fragment);
+        fragment.setArguments(bundle);
         fragmentTransaction.commit();
     }
 
     public void replaceFragment() {
-        fragment = new ListReferalFragment();
+        fragment = new ConclusionFragment();
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack(fragment.getTag());
-        fragmentTransaction.add(R.id.frameLayout, fragment);
+        fragmentTransaction.add(R.id.fragment_container_trans, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void changeFragment() {
+        replaceFragment();
     }
 
     @Override
@@ -84,10 +83,5 @@ public class ReferalsActivity extends AppCompatActivity implements CallbackFragm
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
         super.onStop();
-    }
-
-    @Override
-    public void changeFragment() {
-        replaceFragment();
     }
 }
