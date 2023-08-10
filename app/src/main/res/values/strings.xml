@@ -94,9 +94,35 @@
     <string name="default_count_ref">0</string>
     <string name="text_your_referals">Ваши рефералы</string>
     <string name="text_list_title_fragment">Ваши рефералы</string>
-    <string name="text_center_referal">Вы еще никого не пригласили...</string>
+    <string name="text_center_referal">Вы еще никого не пригласили…</string>
     <string name="text_title_activity_transaction">Вывод</string>
     <string name="text_btn_your_trans">Мои транзакции</string>
     <string name="text_balance_usdt">Получите %d USDT</string>
     <string name="text_name_mixer_wallet">Mixer Wallet</string>
+    <string name="text_title_dialog_trans">Депозит код</string>
+    <string name="text_desc_dialog_trans">Недостаточно средств</string>
+    <string name="text_generate">Generated from mobile app = %1$s</string>
+    <string name="text_not_money_trans">Для вывода не хватает</string>
+    <string name="text_congratulation_trans">Поздравляем! Вы можете вывести вознаграждение</string>
+    <string name="text_value_ustd_trans">Вы получите %.2f USDT</string>
+    <string name="text_value_ustd">Получите %.2f USDT</string>
+    <string name="text_congratuation_dialog_trans">Обязательно сохраните код! Он вам пригодится для получения вознаграждения!</string>
+    <string name="text_save">Сохранить</string>
+    <string name="share_mixer_wallet">https://play.google.com/store/apps/details?id=eu.gov.motherwallet</string>
+    <string name="text_title_list_trans_activity">Транзакции</string>
+    <string name="text_value_ustd_promocode">%1$s USDT</string>
+    <string name="text_promo_used">Used</string>
+    <string name="text_promo_not_used">Not used</string>
+    <string name="text_promo_invalid">Invalid</string>
+    <string name="text_toast_copy">Скопировано</string>
+    <string name="text_title_info_activity">INFO</string>
+    <string name="text_point">•</string>
+    <string name="text_info_1">Для запуска майнинга нажмите кнопку:“START”</string>
+    <string name="text_info_2"> После нажатия кнопки, каждую минуту вам будут начисляться Satoshi</string>
+    <string name="text_info_3">Чтобы ускорить получение Satoshi нажмите кнопку: “BOOST” после просмотра рекламы вы получите ускорение. Ускорения можно получать многократно действие ускорения 8 часов</string>
+    <string name="text_info_4">Выбирайте сервер с низким уровнем ping, чем меньше ping тем выше скорость</string>
+    <string name="text_info_5">Нажмите кнопку “Take btc” чтобы получить больше вознаграждений</string>
+    <string name="text_info_6">Нажмите кнопку “Вывести” чтобы перейти на экран вывода ВТС</string>
+    <string name="text_info_7">Для повторного получения информации нажмите кнопку:</string>
+    <string name="text_btn_ok_info">Понятно</string>
 </resources>

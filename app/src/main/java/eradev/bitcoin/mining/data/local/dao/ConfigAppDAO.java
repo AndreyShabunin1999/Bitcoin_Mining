@@ -14,6 +14,11 @@ public interface ConfigAppDAO {
     @Query("SELECT * FROM ConfigApp LIMIT 1")
     ConfigAppEntity getInfoApp();
 
+    //Получение минимальной суммы вывода
     @Query("SELECT minimalSummToWithdraw FROM ConfigApp WHERE id = 0")
     String getMinSumToWithdraw();
+
+    //Получение курса
+    @Query("SELECT courseToUSTD FROM ConfigApp WHERE id = 0")
+    String getСourseToUSTD();
 }

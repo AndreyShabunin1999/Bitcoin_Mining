@@ -1,16 +1,26 @@
 package eradev.bitcoin.mining.data.remote.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class DepositCodes {
-    private String message;
-    private Integer success;
-    private List<Promocode> promocodeList;
 
-    public DepositCodes(String message, Integer success, List<Promocode> promocodeList) {
+    @SerializedName("message")
+    @Expose
+    private String message;
+    @SerializedName("success")
+    @Expose
+    private Integer success;
+    @SerializedName("promocodes")
+    @Expose
+    private List<Promocode> promocodes;
+
+    public DepositCodes(String message, Integer success, List<Promocode> promocodes) {
         this.message = message;
         this.success = success;
-        this.promocodeList = promocodeList;
+        this.promocodes = promocodes;
     }
 
     public String getMessage() {
@@ -29,11 +39,11 @@ public class DepositCodes {
         this.success = success;
     }
 
-    public List<Promocode> getPromocodeList() {
-        return promocodeList;
+    public List<Promocode> getPromocodes() {
+        return promocodes;
     }
 
-    public void setPromocodeList(List<Promocode> promocodeList) {
-        this.promocodeList = promocodeList;
+    public void setPromocodes(List<Promocode> promocodes) {
+        this.promocodes = promocodes;
     }
 }

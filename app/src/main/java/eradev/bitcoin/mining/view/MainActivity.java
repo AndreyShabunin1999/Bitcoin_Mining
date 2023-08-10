@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -313,6 +314,13 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         db = App.getInstance().getDatabase();
         apiService = Servicey.getPromoMinerApi();
         sharedPreferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
+
+        //Проверка на прохождение обучения
+        if(!sharedPreferences.getBoolean("learning", false)){
+            sharedPreferences.edit().putBoolean("learning", true).apply();
+            startActivity(new Intent(MainActivity.this, InfoActivity.class));
+        }
+
         dialog = new Dialog(MainActivity.this);
         //Получение минимальной суммы для вывода
         getMinSumToWithdraw();
@@ -339,9 +347,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                 v.startAnimation(scale);
 
                 startBtn.setText(R.string.text_after_start_btn);
-
                 tv_conclusion_balance.setText(R.string.text_conclusion_balance_up);
-                tv_duplicate_progress.setText(R.string.text_progress_string_up);
 
                 Call<StatusMessage> startMiningCall = apiService
                         .startMining(binding.getUser().getEmail());
@@ -357,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                                 processMining();
                             } else {
                                 startBtn.setText(R.string.text_start_btn);
+                                tv_conclusion_balance.setText(R.string.text_empty);
                             }
                         }
                     }
@@ -364,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                     @Override
                     public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
                         startBtn.setText(R.string.text_start_btn);
+                        tv_conclusion_balance.setText(R.string.text_empty);
                     }
                 });
             } else {
@@ -373,8 +381,13 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                 intent.putExtra("email", binding.getUser().getEmail());
                 startActivity(intent);
             }
+        });
 
-
+        binding.imgInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, InfoActivity.class));
+            }
         });
 
         // Переключение серверов
@@ -520,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     private void showCustomDialog(Integer idLayout){
         dialog.setContentView(idLayout);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Button btn_ok = dialog.findViewById(R.id.btn_ok);
+        Button btn_ok = dialog.findViewById(R.id.btn_dialog);
         ImageView imgCross = dialog.findViewById(R.id.img_cross);
         //Обработка нажатия на кнопку "ОК"
         btn_ok.setOnClickListener(v -> {
@@ -639,21 +652,38 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             Log.e("diffSeconds", String.valueOf(diffSeconds));
             //Достаем старое значение майнинга в минуту
             int miningPerMinute = sharedPreferences.getInt("miningPerMinute", 120);
-/*
+
+            /*
+            Log.e("dateBoost", binding.getUser().getBoost());
+
             //Проверка на буст
             if(sharedPreferences.getInt("boost", 1) != 1){
-                Date date = new SimpleDateFormat("MMMM dd, yyyy").parse(binding.getUser().getBoost());
-                // parse string to date
-                LocalDate customDate = LocalDate.parse(customStr, formatter);
-            }
+                Date dateStartBoost = null;
+                try {
+                    dateStartBoost = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).parse(binding.getUser().getBoost());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                assert dateStartBoost != null;
+                //-3 из-за разницы во времени с сервером
+                long diffHours = ((dateRestart.getTime() - dateStartBoost.getTime()) / (60 * 60 * 1000)) - 3;
+                Log.e("TIME_BOOST", String.valueOf(diffHours));
+                //Если Boost больше 8 часов сбрасываем значения буста до дефолтных значений
+                if(diffHours > 8) {
+                   sharedPreferences.edit().remove("boost").apply();
+                }
 
- */
+                diffSeconds = diffSeconds - (dateStartBoost.getTime() / 1000);
+            }
+             */
 
             Log.e("miningPerMinute", String.valueOf(miningPerMinute));
             long offlineBalance = (diffSeconds * (miningPerMinute/60));
             Log.e("offlineBalance", String.valueOf(offlineBalance));
-            int oldBalance = binding.getUser().getValue();
-            Log.e("oldBalance", String.valueOf(binding.getUser().getValue()));
+
+            int oldBalance = db.userDAO().getBalanceUser(0);
+
+            Log.e("oldBalance", String.valueOf(oldBalance));
             binding.getUser().setValue((int) (oldBalance + offlineBalance));
         }
         //Очищаем sharedPreferences

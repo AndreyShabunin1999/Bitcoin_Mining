@@ -90,9 +90,11 @@
         app:layout_constraintTop_toBottomOf="@+id/top_linearlayout_trans">
 
         <TextView
+            android:id="@+id/text_info_conclusion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Для вывода не хватает"
+            android:text="@string/text_not_money_trans"
+            android:gravity="center_horizontal"
             android:textColor="@color/text_title_quest_var2"
             android:textSize="16sp" />
 
@@ -107,6 +109,7 @@
             android:textSize="24sp" />
 
         <TextView
+            android:id="@+id/text_value_USTD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
@@ -142,6 +145,7 @@
         android:textColor="@color/turquoise"
         android:textSize="14sp"
         android:translationZ="1dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_transaction"
@@ -159,6 +163,7 @@
         android:text="@string/text_btn_your_trans"
         android:textColor="@color/white"
         android:translationZ="1dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/view_line_trans"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -171,6 +176,7 @@
             android:layout_height="1dp"
             android:background="@color/white"
             android:translationZ="1dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/text_not_transaction"
             app:layout_constraintTop_toBottomOf="@+id/btn_transaction"
             app:layout_constraintVertical_chainStyle="spread" />
@@ -183,6 +189,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:translationZ="1dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

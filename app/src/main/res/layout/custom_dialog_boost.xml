@@ -11,23 +11,25 @@
     <ImageView
         android:id="@+id/img_cross"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/cross"
         android:layout_weight="1"
         android:paddingBottom="15dp"
         android:layout_gravity="end"/>
 
     <ImageView
+        android:id="@+id/img_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/black_rocket"
         android:layout_weight="1"
         android:paddingBottom="15dp"
         android:layout_gravity="center_horizontal"/>
 
     <TextView
+        android:id="@+id/text_title_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="@string/text_tv_acceleration"
         android:textColor="@color/color_text_acceleration"
         android:textAllCaps="true"
@@ -38,8 +40,9 @@
         android:layout_gravity="center_horizontal"/>
 
     <TextView
+        android:id="@+id/text_description_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="@string/text_dialog_boost"
         android:textColor="@color/color_text_acceleration"
         android:textSize="14sp"
@@ -50,9 +53,9 @@
         android:layout_gravity="center_horizontal"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_ok"
+        android:id="@+id/btn_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@drawable/background_btn_dialog"
         android:drawablePadding="20dp"
         android:paddingStart="50dp"

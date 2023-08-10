@@ -39,31 +39,32 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0"
                     android:background="@drawable/mini_logo" />
 
                 <Space
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4" />
+                    android:layout_weight="0.25" />
 
                 <TextView
                     android:id="@+id/tv_duplicate_progress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:layout_weight="0.5"
                     android:textColor="@color/white"
                     android:textSize="24sp" />
 
                 <Space
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4" />
+                    android:layout_weight="0.25" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/startBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2.2"
+                    android:layout_weight="2"
                     android:background="@drawable/gradient_btn_reconnection"
                     android:text="@{user.mining_is_started == 1 ? @string/text_after_start_btn : @string/text_start_btn}"
                     android:textColor="@color/black" />
@@ -80,18 +81,15 @@
                 android:textColor="@color/white"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/balance_linearlayout"
+        <RelativeLayout
+            android:id="@+id/balance_relativelayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/gradient_linearlayout_balance"
-            android:gravity="center"
-            android:orientation="vertical"
             android:padding="14dp"
-            android:weightSum="3"
             app:layout_constraintBottom_toTopOf="@+id/linearlayout_progress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -99,67 +97,84 @@
             app:layout_constraintTop_toBottomOf="@+id/top_linearlayout"
             app:layout_constraintVertical_chainStyle="spread">
 
-            <TextView
+            <ImageView
+                android:id="@+id/img_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="13dp"
-                android:text="@string/text_your_balance"
-                android:textColor="@color/turquoise"
-                android:textSize="14sp" />
+                android:layout_alignParentRight="true"
+                android:background="@drawable/info_icon"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:weightSum="3">
 
                 <TextView
-                    android:id="@+id/big_text_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="13dp"
-                    android:textColor="@color/white"
-                    android:text="@{String.valueOf(user.value)}"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:text="@string/text_your_balance"
+                    android:textColor="@color/turquoise"
+                    android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/text_satoshi"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="13dp"
-                    android:textColor="@color/white"
-                    android:text="@string/text_satoshi"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/big_text_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="13dp"
+                        android:textColor="@color/white"
+                        android:text="@{String.valueOf(user.value)}"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_satoshi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="13dp"
+                        android:textColor="@color/white"
+                        android:text="@string/text_satoshi"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/small_text_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="12dp"
+                        android:textColor="@color/white"
+                        android:text="@{@string/value_float_btc((float) user.value / 100000000F)}"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/text_btc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="12dp"
+                        android:textColor="@color/white"
+                        android:text="@string/text_btc"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/small_text_balance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="12dp"
-                    android:textColor="@color/white"
-                    android:text="@{@string/value_float_btc((float) user.value / 100000000F)}"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/text_btc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="12dp"
-                    android:textColor="@color/white"
-                    android:text="@string/text_btc"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/linearlayout_progress"
@@ -170,7 +185,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/balance_linearlayout">
+            app:layout_constraintTop_toBottomOf="@+id/balance_relativelayout">
 
             <TextView
                 android:id="@+id/tvProgress"
@@ -195,7 +210,7 @@
                 android:progressDrawable="@drawable/gradient_progressbar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/balance_linearlayout" />
+                app:layout_constraintTop_toBottomOf="@id/balance_relativelayout" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton

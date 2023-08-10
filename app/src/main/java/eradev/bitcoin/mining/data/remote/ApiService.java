@@ -8,6 +8,7 @@ import eradev.bitcoin.mining.data.remote.models.QuestsModel;
 import eradev.bitcoin.mining.data.remote.models.Referals;
 import eradev.bitcoin.mining.data.remote.models.StartScreenModel;
 import eradev.bitcoin.mining.data.remote.models.StatusMessage;
+import eradev.bitcoin.mining.data.remote.models.StatusMessageDepozit;
 import eradev.bitcoin.mining.data.remote.models.UnityAdsModel;
 import eradev.bitcoin.mining.data.remote.models.Users;
 import eradev.bitcoin.mining.utils.Credentials;
@@ -90,4 +91,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("motherwallet/get_user_promcodes.php")
     Call<DepositCodes> getDepCodes(@Field("email") String email);
+
+    //Создание депосит кода
+    @FormUrlEncoded
+    @POST("motherwallet/create_promocode_mobile.php")
+    Call<StatusMessageDepozit> createDepCodes(@Field("email") String email, @Field("value") Double value, @Field("sname") String sname, @Field("source") String source);
 }

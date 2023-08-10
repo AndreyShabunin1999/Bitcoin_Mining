@@ -10,13 +10,21 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import eradev.bitcoin.mining.CallbackFragment;
 import eradev.bitcoin.mining.R;
 import eradev.bitcoin.mining.checkNetwork.NetworkChangeListener;
+import eradev.bitcoin.mining.data.local.App;
+import eradev.bitcoin.mining.data.local.BitcoinMiningDB;
 
 public class TransactionActivity extends AppCompatActivity implements CallbackFragment {
 
@@ -26,6 +34,8 @@ public class TransactionActivity extends AppCompatActivity implements CallbackFr
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
     Bundle bundle;
 
+    BitcoinMiningDB db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +43,8 @@ public class TransactionActivity extends AppCompatActivity implements CallbackFr
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        db = App.getInstance().getDatabase();
 
         Button btnBack = findViewById(R.id.btn_back_trans);
 
@@ -42,6 +54,7 @@ public class TransactionActivity extends AppCompatActivity implements CallbackFr
         bundle.putInt("balance", intent.getIntExtra("balance",0));
         bundle.putInt("minimalSummToWithdraw", intent.getIntExtra("minimalSummToWithdraw",0));
         bundle.putString("email", intent.getStringExtra("email"));
+        bundle.putDouble("courseToUSTD", Double.parseDouble(db.configAppDao().getСourseToUSTD()));
 
         addFragmentTransaction();
 
@@ -64,6 +77,7 @@ public class TransactionActivity extends AppCompatActivity implements CallbackFr
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack(fragment.getTag());
         fragmentTransaction.add(R.id.fragment_container_trans, fragment);
+        fragment.setArguments(bundle);
         fragmentTransaction.commit();
     }
 

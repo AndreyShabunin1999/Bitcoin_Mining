@@ -12,9 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -60,6 +63,18 @@ public class ReferalFragment extends Fragment {
             String textCopy = binding.textValueCodeReferal.getText().toString();
             ClipData clipData = ClipData.newPlainText("textCopy", textCopy);
             clipboardManager.setPrimaryClip(clipData);
+
+            LayoutInflater inflaterToast = getLayoutInflater();
+            View toastLayout = inflaterToast.inflate(R.layout.toast_layout, (ViewGroup) view.findViewById(R.id.toast_root));
+
+            TextView tvText = toastLayout.findViewById(R.id.text_toast);
+            tvText.setText(R.string.text_toast_copy);
+
+            Toast toast = new Toast(requireContext());
+            toast.setGravity(Gravity.TOP|Gravity.FILL_HORIZONTAL, 0, 0);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(toastLayout);
+            toast.show();
         });
 
         //Обработка нажатия на кнопку поделиться

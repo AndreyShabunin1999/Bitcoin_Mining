@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
@@ -166,6 +167,9 @@ public class AdapterQuest extends RecyclerView.Adapter<AdapterQuest.MyViewHolder
                     Picasso.with(getApplicationContext()).load(url).into(imageView);
                     break;
             }
+        } else {
+            //Если картинки нет imageView скрываем
+            imageView.setVisibility(View.INVISIBLE);
         }
     }
 

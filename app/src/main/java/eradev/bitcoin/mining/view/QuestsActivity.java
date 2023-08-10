@@ -204,7 +204,7 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
                         //обновление баланса в БД
                         ExecutorService executorService = Executors.newSingleThreadExecutor();
                         Handler handler = new Handler(Looper.getMainLooper());
-                        executorService.execute(() -> handler.post(() -> db.userDAO().updateBalanceFromUser(0,newBalance)));
+                        executorService.execute(() -> handler.post(() -> db.userDAO().updateBalanceFromUser(0, newBalance)));
                     }
                 }
             }
@@ -232,11 +232,9 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
         sharedPreferences.edit().putBoolean("repeat", repeat).apply();
     }
 
-
     //Сохранение данных о задачах в бд
     public void updateTaskUser(String code){
         if(getResources().getString(R.string.text_code_quest_daily).equals(code)){
-            Call<QuestsModel> userCall;
             Call<Users> usersCall;
             //Способ регистрации пользователя (без password через gmail
             if(user.getPassword().isEmpty()){

@@ -32,6 +32,9 @@ public interface UserDAO {
     @Query("SELECT email FROM User WHERE id = :id")
     String getEmailUser(int id);
 
+    @Query("SELECT value FROM User WHERE id = :id")
+    Integer getBalanceUser(int id);
+
     @Query("UPDATE User SET daily =:daily WHERE id = :id")
     void updateDailyFromUser(int id, String daily);
 

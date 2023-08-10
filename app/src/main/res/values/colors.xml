@@ -20,4 +20,7 @@
     <color name="color_text_ping">#3F8DE5</color>
     <color name="text_title_quest_var2">#99ABD4</color>
     <color name="text_title_quest_var1">#E6158D</color>
+    <color name="RED">#FF3A44</color>
+    <color name="GREEN">#34A853</color>
+    <color name="ORANGE">#FFA500</color>
 </resources>
