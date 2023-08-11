@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -95,6 +97,8 @@ public class InfoTransactionFragment extends Fragment {
 
         //Обработка клика по кнопки "Вывести"
         btnConclusion.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(requireContext(), R.anim.scale);
+            v.startAnimation(scale);
             if(balance > minimalSummToWithdraw) {
                 //Обновление баланса Пользователя на сервере и БД
                 updateBalanceOnServer(-balance);
@@ -106,12 +110,12 @@ public class InfoTransactionFragment extends Fragment {
         });
 
         btnTransaction.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(requireContext(), R.anim.scale);
+            v.startAnimation(scale);
             Intent intent = new Intent(requireActivity(), ListTransactionActivity.class);
             intent.putExtra("email", this.getArguments().getString("email"));
             startActivity(intent);
         });
-
-        btnTransaction.setOnClickListener(v -> startActivity(new Intent(requireActivity(), ListTransactionActivity.class)));
         return view;
     }
 

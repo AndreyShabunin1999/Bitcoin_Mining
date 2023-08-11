@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -80,6 +82,8 @@ public class ConclusionFragment extends Fragment {
         ImageView imgCross = dialog.findViewById(R.id.img_cross);
         //Обработка нажатия на кнопку "Сохранить"
         btnCopyDepCode.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(requireContext(), R.anim.scale);
+            v.startAnimation(scale);
             copyDepCode();
             dialog.cancel();
         });

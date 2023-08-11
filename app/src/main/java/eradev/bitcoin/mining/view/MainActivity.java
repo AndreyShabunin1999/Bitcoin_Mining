@@ -334,6 +334,11 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         //Инициализация элементов интерфейса
         initView();
 
+        //Если имеется рабочий буст, то отобразить надпись
+        if(sharedPreferences.getInt("boost",1) != 1){
+            binding.btnBoost.setText(getResources().getString(R.string.text_btn_boost_value, sharedPreferences.getInt("boost", 1)));
+        }
+
         // инициализация SDK Unity ADS
         UnityAds.initialize(MainActivity.this, unityGameID, testMode, this);
 
@@ -341,11 +346,10 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         calculatePing();
 
         startBtn.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
+            v.startAnimation(scale);
 
             if(binding.getUser().getMining_is_started() == 0){
-                Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
-                v.startAnimation(scale);
-
                 startBtn.setText(R.string.text_after_start_btn);
                 tv_conclusion_balance.setText(R.string.text_conclusion_balance_up);
 
@@ -398,34 +402,35 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
 
         //Обработка нажатия кнопки
         boostBtn.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
+            v.startAnimation(scale);
             rewardAfterAds = true;
             showCustomDialog(R.layout.custom_dialog_boost);
         });
         //Обработка нажатия кнопки "Take BTC"
-        takeBtcBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, QuestsActivity.class)));
 
-       //checkTime();
+        takeBtcBtn.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
+            v.startAnimation(scale);
+            startActivity(new Intent(MainActivity.this, QuestsActivity.class));
+        });
+
 
     }
 
     private void processMining(){
-        Log.e("YA TUTA V PROCESSE","");
         //Если майнинг запущен запускаем цикл счета майнинга
         if(binding.getUser().getMining_is_started() == 1){
-            Log.e("POLET NORM","");
             //скорость в минуту
             int miningPerMinute = calculateMiningPerMinute();
-            Log.e("SPEED", String.valueOf(miningPerMinute));
-            Log.e("VALUE", String.valueOf((60/miningPerMinute) * 1000));
-            float b = (float) 60/miningPerMinute * 1000;
-            Log.e("VALUE_B", String.valueOf(b));
+            float speed = (float) 60/miningPerMinute * 1000;
             Handler handler = new Handler();
             threadMining = new Thread() {
                 @Override
                 public void run() {
                     try {
                         while(miningJob) {
-                            sleep((int) b);
+                            sleep((int) speed);
                             handler.post(() -> {
                                 int balance = binding.getUser().getValue();
                                 int newBalance = balance + 1;
@@ -474,7 +479,11 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         //Извлечение пинга и его рассчет
         int ping = (50 - sharedPreferences.getInt("ping", 1))/2;
         int zk = sharedPreferences.getInt("miningPerMinute", 120);
-        return (zk * (1 + (boost/100)) * (1 + ping/100));
+        if(boost != 1){
+            return (zk * (1 + (boost/100)) * (1 + ping/100));
+        } else {
+            return (zk * boost * (1 + ping/100));
+        }
     }
 
     private void updateBalanceUser(int newBalance){
@@ -533,10 +542,10 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     private void showCustomDialog(Integer idLayout){
         dialog.setContentView(idLayout);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Button btn_ok = dialog.findViewById(R.id.btn_dialog);
+        Button btnDialog = dialog.findViewById(R.id.btn_dialog);
         ImageView imgCross = dialog.findViewById(R.id.img_cross);
         //Обработка нажатия на кнопку "ОК"
-        btn_ok.setOnClickListener(v -> {
+        btnDialog.setOnClickListener(v -> {
             //Вызов просмотра рекламы
             UnityAds.load(adUnitId, loadListener);
             UnityAds.show(MainActivity.this, adUnitId, showListener);
@@ -640,24 +649,35 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
 
     //Функция
     private void checkOfflineTimeMining() {
-        //Дата выходав офлайн майнинг
         long stopMining = sharedPreferences.getLong("dateStopMining", 0L);
         if(stopMining != 0L){
+            Log.e("CHECK", "МАЙНИНГ ЕСТЬ");
+            //Дата и времявыхода из приложения
             Date dateStopMining = new Date(stopMining);
-            //текущее время
+
+            Log.e("dateStopMining", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(dateStopMining));
+
+            //текущая дата и время (когда пользователь вернулся в приложение)
             Date dateRestart = new Date();
-            Log.e("DATE2", String.valueOf(dateRestart));
+
+            Log.e("dateRestart", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(dateRestart));
+
             //Расчет разницы в секундах
-            long diffSeconds = (((dateRestart.getTime() - dateStopMining.getTime()) / 1000));
+            long diffSeconds = (dateRestart.getTime() - dateStopMining.getTime())/1000;
             Log.e("diffSeconds", String.valueOf(diffSeconds));
-            //Достаем старое значение майнинга в минуту
+            //старое значение майнинга в минуту
             int miningPerMinute = sharedPreferences.getInt("miningPerMinute", 120);
+            Log.e("miningPerMinute", String.valueOf(miningPerMinute));
+            //Получение баланса на момент выхода из приложения
+            int oldBalance = db.userDAO().getBalanceUser(0);
+            Log.e("oldBalance", String.valueOf(oldBalance));
 
-            /*
-            Log.e("dateBoost", binding.getUser().getBoost());
-
-            //Проверка на буст
+            //Проверка на наличие действующего буста
             if(sharedPreferences.getInt("boost", 1) != 1){
+
+                Log.e("CHECK", "БУСТ ЕСТЬ");
+
+                //Время старта буста
                 Date dateStartBoost = null;
                 try {
                     dateStartBoost = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).parse(binding.getUser().getBoost());
@@ -665,26 +685,47 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                     throw new RuntimeException(e);
                 }
                 assert dateStartBoost != null;
-                //-3 из-за разницы во времени с сервером
-                long diffHours = ((dateRestart.getTime() - dateStartBoost.getTime()) / (60 * 60 * 1000)) - 3;
-                Log.e("TIME_BOOST", String.valueOf(diffHours));
-                //Если Boost больше 8 часов сбрасываем значения буста до дефолтных значений
-                if(diffHours > 8) {
-                   sharedPreferences.edit().remove("boost").apply();
+
+                Log.e("dateStartBoost", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(dateStartBoost));
+
+                //Проверяем на момент окончания буста (если буст активен при возврате
+                if(((dateStartBoost.getTime()/1000) + 28800) < (dateRestart.getTime()/1000)){
+
+                    Log.e("CHECK", "БУСТ меньше времени возврата");
+
+                    //Время работы буста в секундах
+                    long workSecondsBoost = ((dateStartBoost.getTime() / 1000) + 28800) - (dateStopMining.getTime()/1000);
+
+                    //получаем баланс при работе с бустом
+                    int offlineBalanceBoost = (int) (workSecondsBoost * (miningPerMinute/60));
+
+                    //Прибавляем к старому балансу
+                    oldBalance = oldBalance + offlineBalanceBoost;
+
+                    long remainsTime = dateRestart.getTime()/1000 - ((dateStartBoost.getTime() / 1000) + 28800);
+
+                    miningPerMinute = (int) (miningPerMinute / (1 + (sharedPreferences.getLong("boost", 0)/100)));
+
+                    //получаем баланс при работе без буста
+                    int offlineBalanceNotBoost = (int) (remainsTime * (miningPerMinute/60));
+
+                    binding.getUser().setValue(oldBalance + offlineBalanceNotBoost);
+
+                    sharedPreferences.edit().remove("boost").apply();
+                } else {
+                    Log.e("CHECK", "БУСТ больше времени возврата");
+
+                    long offlineBalance = (diffSeconds * (miningPerMinute/60));
+                    Log.e("offlineBalance", String.valueOf(offlineBalance));
+                    binding.getUser().setValue((int) (oldBalance + offlineBalance));
                 }
+            } else {
+                Log.e("CHECK", "БУСТ больше времени возврата");
 
-                diffSeconds = diffSeconds - (dateStartBoost.getTime() / 1000);
+                long offlineBalance = (diffSeconds * (miningPerMinute/60));
+                Log.e("offlineBalance", String.valueOf(offlineBalance));
+                binding.getUser().setValue((int) (oldBalance + offlineBalance));
             }
-             */
-
-            Log.e("miningPerMinute", String.valueOf(miningPerMinute));
-            long offlineBalance = (diffSeconds * (miningPerMinute/60));
-            Log.e("offlineBalance", String.valueOf(offlineBalance));
-
-            int oldBalance = db.userDAO().getBalanceUser(0);
-
-            Log.e("oldBalance", String.valueOf(oldBalance));
-            binding.getUser().setValue((int) (oldBalance + offlineBalance));
         }
         //Очищаем sharedPreferences
         sharedPreferences.edit().remove("dateStopMining").apply();

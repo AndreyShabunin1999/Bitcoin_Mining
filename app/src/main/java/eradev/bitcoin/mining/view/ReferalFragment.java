@@ -16,6 +16,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,6 +93,8 @@ public class ReferalFragment extends Fragment {
         });
 
         binding.btnViewAllReferals.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(requireContext(), R.anim.scale);
+            v.startAnimation(scale);
             if(callbackFragment != null){
                 callbackFragment.changeFragment();
             }
