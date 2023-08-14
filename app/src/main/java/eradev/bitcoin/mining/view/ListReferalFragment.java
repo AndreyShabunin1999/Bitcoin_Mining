@@ -48,6 +48,9 @@ public class ListReferalFragment extends Fragment {
 
     List<Referal> referalList = new ArrayList<>();
 
+    TextView center_tv_ref;
+    RecyclerView recyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,22 +58,14 @@ public class ListReferalFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_list_referal, container, false);
 
-        TextView center_tv_ref = view.findViewById(R.id.center_tv_ref);
+        center_tv_ref = view.findViewById(R.id.center_tv_ref);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_referal);
+        recyclerView = view.findViewById(R.id.recycler_view_referal);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         getDataReferals();
-
-        if(referalList.size() > 0){
-            center_tv_ref.setVisibility(View.INVISIBLE);
-        }
-
-        adapterReferal = new AdapterReferal(referalList);
-        recyclerView.setAdapter(adapterReferal);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getApplication(), DividerItemDecoration.HORIZONTAL));
 
         return view;
     }
@@ -79,7 +74,7 @@ public class ListReferalFragment extends Fragment {
         ApiService apiService = Servicey.getPromoMinerApi();
         BitcoinMiningDB db = App.getInstance().getDatabase();
         Call<Referals> referalsCall = apiService
-                .getReferals(db.userDAO().getUser(0).getEmail());
+                .getReferals(db.userDAO().getRefCode());
 
         referalsCall.enqueue(new Callback<Referals>() {
             @Override
@@ -87,8 +82,16 @@ public class ListReferalFragment extends Fragment {
                 if(response.isSuccessful()){
                     assert response.body() != null;
                     if(response.body().getSuccess() == 1){
-                        for(int i = 0; i < response.body().getReferalList().size(); i ++){
-                            referalList = response.body().getReferalList();
+                        if(response.body().getReferalList() != null){
+                            for(int i = 0; i < response.body().getReferalList().size(); i++){
+                                referalList = response.body().getReferalList();
+                            }
+                            if(referalList.size() > 0){
+                                center_tv_ref.setVisibility(View.INVISIBLE);
+                            }
+                            adapterReferal = new AdapterReferal(referalList);
+                            recyclerView.setAdapter(adapterReferal);
+                            recyclerView.addItemDecoration(new DividerItemDecoration(getApplication(), DividerItemDecoration.HORIZONTAL));
                         }
                     }
                 }

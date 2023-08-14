@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import java.text.ParseException;
@@ -24,6 +28,7 @@ import java.util.concurrent.Executors;
 import eradev.bitcoin.mining.AdapterQuest;
 import eradev.bitcoin.mining.QuestInterface;
 import eradev.bitcoin.mining.R;
+import eradev.bitcoin.mining.checkNetwork.NetworkChangeListener;
 import eradev.bitcoin.mining.data.local.App;
 import eradev.bitcoin.mining.data.local.BitcoinMiningDB;
 import eradev.bitcoin.mining.data.local.entity.ConfigAppEntity;
@@ -45,6 +50,8 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
     AdapterQuest adapterQuest;
     ApiService apiService;
     UserEntity user;
+
+    NetworkChangeListener networkChangeListener = new NetworkChangeListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +101,7 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
         if(checkVisibleDailyQuest()){
             QuestEntity questEveryDay = new QuestEntity(questEntity.size(), getResources().getString(R.string.text_title_evr_quest),
                     Integer.parseInt(configApp.getDailyBonus()), Integer.parseInt(configApp.getDailyWeight()), getResources().getString(R.string.text_description_evr_quest), "",
-                    getResources().getString(R.string.text_code_quest_daily),false, getResources().getString(R.string.text_code_quest_daily));
+                    getResources().getString(R.string.text_code_quest_daily),true, getResources().getString(R.string.text_code_quest_daily));
             questEntity.add(questEveryDay);
         }
         QuestEntity questReferal = new QuestEntity(questEntity.size(),getResources().getString(R.string.text_title_ref_quest),
@@ -145,6 +152,8 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
 
     @Override
     protected void onStart() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeListener, filter);
         super.onStart();
         //Дата начала выполнения задания
         long startQuest = sharedPreferences.getLong("dateStartQuest", 0L);
@@ -205,6 +214,7 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
                         ExecutorService executorService = Executors.newSingleThreadExecutor();
                         Handler handler = new Handler(Looper.getMainLooper());
                         executorService.execute(() -> handler.post(() -> db.userDAO().updateBalanceFromUser(0, newBalance)));
+                        user.setValue(newBalance);
                     }
                 }
             }
@@ -236,7 +246,7 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
     public void updateTaskUser(String code){
         if(getResources().getString(R.string.text_code_quest_daily).equals(code)){
             Call<Users> usersCall;
-            //Способ регистрации пользователя (без password через gmail
+            //Способ регистрации пользователя (без password через gmail)
             if(user.getPassword().isEmpty()){
                 usersCall = apiService
                         .getUserGoogle(user.getEmail());
@@ -254,6 +264,12 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
                         Handler handler = new Handler(Looper.getMainLooper());
                         executorService.execute(() -> handler.post(() -> {
                             db.userDAO().updateDailyFromUser(0, response.body().getUsers().get(0).getDaily());
+                            List<QuestEntity> quest = adapterQuest.getData();
+                            updateBalanceUser(sharedPreferences.getInt("currentNumber", 0));
+                            quest.remove(sharedPreferences.getInt("positionCurrentNumber", 0));
+                            adapterQuest.setData(quest);
+                            adapterQuest.notifyDataSetChanged();
+                            clearSharedPref();
                         }));
                     }
                 }
@@ -264,6 +280,12 @@ public class QuestsActivity extends AppCompatActivity implements QuestInterface 
             db.userDAO().updateTasksFromUser(0, code);
         }
         user = db.userDAO().getUser(0);
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(networkChangeListener);
+        super.onStop();
     }
 }
 

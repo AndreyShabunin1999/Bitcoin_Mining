@@ -34,4 +34,13 @@ public class Referal {
     public void setValue(Integer value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "Referal{" +
+                "email='" + email + '\'' +
+                ", server_time='" + server_time + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

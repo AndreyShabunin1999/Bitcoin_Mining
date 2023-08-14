@@ -18,7 +18,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,7 +63,7 @@ public class FragmentLogin extends Fragment {
 
         tvSignInGoogle.setOnClickListener(v -> {
             if(etEmail.getText().toString().isEmpty()) {
-                Toast.makeText(getContext(), R.string.text_error_empty_email, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(), R.string.text_error_empty_email, Toast.LENGTH_SHORT).show();
             } else {
                 if(validEmail(etEmail.getText().toString().trim())){
                     ApiService promoMinerApi = Servicey.getPromoMinerApi();
@@ -82,16 +81,16 @@ public class FragmentLogin extends Fragment {
                                     updateUserInBD(user, "");
                                     startActivity(new Intent(getContext(), MainActivity.class));
                                 } else {
-                                    Toast.makeText(getContext(), R.string.text_not_found_user, Toast.LENGTH_SHORT).show();
+                                //    Toast.makeText(getContext(), R.string.text_not_found_user, Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<Users> call, @NonNull Throwable t) {
-                            Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -102,7 +101,7 @@ public class FragmentLogin extends Fragment {
             Animation scale = AnimationUtils.loadAnimation(getContext(), R.anim.scale);
             v.startAnimation(scale);
             if(etEmail.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
-                Toast.makeText(getContext(), R.string.text_error_empty_email, Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(getContext(), R.string.text_error_empty_email, Toast.LENGTH_SHORT).show();
             } else {
                 if (validEmail(etEmail.getText().toString().trim())) {
                     ApiService promoMinerApi = Servicey.getPromoMinerApi();
@@ -119,16 +118,16 @@ public class FragmentLogin extends Fragment {
                                     updateUserInBD(user, etPassword.getText().toString().trim());
                                     startActivity(new Intent(getContext(), MainActivity.class));
                                 } else {
-                                    Toast.makeText(getContext(), R.string.text_not_found_user, Toast.LENGTH_SHORT).show();
+                             //       Toast.makeText(getContext(), R.string.text_not_found_user, Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
+                            //    Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<Users> call, @NonNull Throwable t) {
-                            Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
+                       //     Toast.makeText(getContext(), R.string.text_error_auth, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -141,7 +140,6 @@ public class FragmentLogin extends Fragment {
     private boolean validEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         if(!(pattern.matcher(email).matches())){
-            Toast.makeText(getContext(), R.string.text_error_email, Toast.LENGTH_SHORT).show();
             return false;
         } else {
             return true;

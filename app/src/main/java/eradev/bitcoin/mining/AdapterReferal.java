@@ -31,6 +31,7 @@ public class AdapterReferal extends RecyclerView.Adapter<AdapterReferal.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Log.e("LIST_REF", String.valueOf(referalsList.get(position)));
         final Referal referal = referalsList.get(position);
         referal.setEmail(maskEmail(referal.getEmail()));
         holder.bindingReferal.setReferal(referal);

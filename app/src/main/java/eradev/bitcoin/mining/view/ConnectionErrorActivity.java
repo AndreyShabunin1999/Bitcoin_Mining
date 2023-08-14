@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import eradev.bitcoin.mining.R;
@@ -22,6 +24,8 @@ public class ConnectionErrorActivity extends AppCompatActivity {
         btnReconnection = findViewById(R.id.btn_reconnection);
 
         btnReconnection.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
+            v.startAnimation(scale);
             Intent intent = new Intent(ConnectionErrorActivity.this, SplashScreen.class);
             startActivity(intent);
             finish();

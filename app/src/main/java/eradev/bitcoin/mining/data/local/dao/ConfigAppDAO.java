@@ -21,4 +21,8 @@ public interface ConfigAppDAO {
     //Получение курса
     @Query("SELECT courseToUSTD FROM ConfigApp WHERE id = 0")
     String getСourseToUSTD();
+
+    //Получение курса
+    @Query("SELECT referalBonus FROM ConfigApp WHERE id = 0")
+    String getReferalBonus();
 }

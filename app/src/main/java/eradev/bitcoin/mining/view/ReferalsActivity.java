@@ -41,7 +41,7 @@ public class ReferalsActivity extends AppCompatActivity implements CallbackFragm
 
     FragmentTransaction fragmentTransaction;
 
-    List<Referal> referalList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

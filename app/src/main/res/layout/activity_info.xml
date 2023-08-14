@@ -272,12 +272,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_servers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="15dp"
                 android:paddingStart="16dp"
+                android:layout_marginTop="15dp"
                 android:paddingEnd="16dp"
                 android:translationZ="1dp"
                 android:weightSum="7">
@@ -307,42 +306,47 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
                         android:background="@drawable/stick_active"
-                        android:rotation="90" />
+                        android:rotation="136.8" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_ping_server1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
                         android:orientation="horizontal"
                         android:paddingTop="35dp"
                         android:paddingBottom="10dp"
+                        android:layout_alignStart="@+id/img_ping_server1"
+                        android:layout_alignEnd="@+id/img_ping_server1"
                         android:weightSum="3">
 
                         <TextView
                             android:id="@+id/text_ping_server1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ping"
+                            android:layout_weight="1"
+                            android:textAlignment="viewStart"
                             android:textColor="@color/color_text_ping"
                             android:textSize="10sp" />
 
                         <TextView
                             android:id="@+id/tv_value_ping_server1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:paddingStart="2dp"
-                            android:paddingEnd="2dp"
-                            android:text="2"
+                            android:layout_weight="1.2"
+                            android:text="@string/text_value_ping_server1"
+                            android:textAlignment="center"
                             android:textColor="@color/white"
-                            android:textSize="20sp" />
+                            android:textSize="17sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ms"
+                            android:layout_weight="0.8"
+                            android:textAlignment="viewEnd"
                             android:textColor="@color/turquoise_blue"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -386,7 +390,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
-                        android:rotation="0"
+                        android:rotation="158.4"
                         android:background="@drawable/stick_disable" />
 
                     <LinearLayout
@@ -396,6 +400,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal"
                         android:orientation="horizontal"
+                        android:layout_alignStart="@+id/img_ping_server2"
+                        android:layout_alignEnd="@+id/img_ping_server2"
                         android:paddingTop="35dp"
                         android:paddingBottom="10dp">
 
@@ -404,7 +410,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ping"
-                            android:textColor="@color/color_end_icon_password"
+                            android:layout_weight="1"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/text_default_black"
                             android:textSize="11sp" />
 
                         <TextView
@@ -414,15 +422,18 @@
                             android:paddingStart="2dp"
                             android:paddingEnd="2dp"
                             android:text="@string/text_value_ping_server2"
-                            android:textColor="@color/color_end_icon_password"
-                            android:textSize="20sp" />
+                            android:layout_weight="1.2"
+                            android:textColor="@color/text_default_black"
+                            android:textSize="17sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ms"
-                            android:textColor="@color/color_end_icon_password"
+                            android:layout_weight="0.8"
+                            android:textAlignment="viewEnd"
+                            android:textColor="@color/text_default_black"
                             android:textSize="11sp" />
                     </LinearLayout>
 
@@ -465,7 +476,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
-                        android:rotation="0"
+                        android:rotation="90"
                         android:background="@drawable/stick_disable" />
 
                     <LinearLayout
@@ -477,6 +488,8 @@
                         android:orientation="horizontal"
                         android:paddingTop="35dp"
                         android:paddingBottom="10dp"
+                        android:layout_alignStart="@+id/img_ping_server3"
+                        android:layout_alignEnd="@+id/img_ping_server3"
                         android:weightSum="3">
 
                         <TextView
@@ -484,7 +497,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ping"
-                            android:textColor="@color/color_end_icon_password"
+                            android:layout_weight="1"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/text_default_black"
                             android:textSize="10sp" />
 
                         <TextView
@@ -494,15 +509,18 @@
                             android:paddingStart="2dp"
                             android:paddingEnd="2dp"
                             android:text="@string/text_value_ping_server3"
-                            android:textColor="@color/color_end_icon_password"
-                            android:textSize="20sp" />
+                            android:layout_weight="1.2"
+                            android:textColor="@color/text_default_black"
+                            android:textSize="17sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ms"
-                            android:textColor="@color/color_end_icon_password"
+                            android:textAlignment="viewEnd"
+                            android:layout_weight="0.8"
+                            android:textColor="@color/text_default_black"
                             android:textSize="10sp" />
                     </LinearLayout>
 
@@ -545,7 +563,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
-                        android:rotation="0"
+                        android:rotation="144"
                         android:background="@drawable/stick_disable" />
 
                     <LinearLayout
@@ -557,6 +575,8 @@
                         android:orientation="horizontal"
                         android:paddingTop="35dp"
                         android:paddingBottom="10dp"
+                        android:layout_alignStart="@+id/img_ping_server4"
+                        android:layout_alignEnd="@+id/img_ping_server4"
                         android:weightSum="3">
 
                         <TextView
@@ -565,7 +585,8 @@
                             android:layout_height="wrap_content"
                             android:text="@string/text_ping"
                             android:layout_weight="1"
-                            android:textColor="@color/color_end_icon_password"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/text_default_black"
                             android:textSize="10sp" />
 
                         <TextView
@@ -575,17 +596,18 @@
                             android:paddingStart="2dp"
                             android:paddingEnd="2dp"
                             android:text="@string/text_value_ping_server4"
-                            android:layout_weight="1"
-                            android:textColor="@color/color_end_icon_password"
-                            android:textSize="20sp" />
+                            android:layout_weight="1.2"
+                            android:textColor="@color/text_default_black"
+                            android:textSize="17sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ms"
-                            android:layout_weight="1"
-                            android:textColor="@color/color_end_icon_password"
+                            android:layout_weight="0.8"
+                            android:textAlignment="viewEnd"
+                            android:textColor="@color/text_default_black"
                             android:textSize="10sp" />
                     </LinearLayout>
 

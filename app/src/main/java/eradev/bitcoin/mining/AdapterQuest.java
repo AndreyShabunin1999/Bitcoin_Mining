@@ -1,9 +1,12 @@
 package eradev.bitcoin.mining;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.unity3d.services.core.properties.ClientProperties.getApplicationContext;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,11 +64,11 @@ public class AdapterQuest extends RecyclerView.Adapter<AdapterQuest.MyViewHolder
             holder.bindingQuest.imgQuest.setBackground(ContextCompat.getDrawable(context,R.drawable.round_btn_quest_var1));
             holder.bindingQuest.linearQuest.setBackground(ContextCompat.getDrawable(context,R.drawable.quest_item_var1));
             holder.bindingQuest.tvTitleQuest.setTextColor(ContextCompat.getColor(context, R.color.text_title_quest_var1));
-            holder.bindingQuest.tvDescriptionQuest.setTextColor(ContextCompat.getColor(context, R.color.text_black));
-            holder.bindingQuest.btnActivity.setTextColor(ContextCompat.getColor(context, R.color.text_black));
+            holder.bindingQuest.tvDescriptionQuest.setTextColor(ContextCompat.getColor(context, R.color.color_text_acceleration));
+            holder.bindingQuest.btnActivity.setTextColor(ContextCompat.getColor(context, R.color.color_text_acceleration));
             holder.bindingQuest.btnActivity.setBackground(ContextCompat.getDrawable(context,R.drawable.gradient_btn_in_quest_var1));
             holder.bindingQuest.linearOutBtn.setBackground(ContextCompat.getDrawable(context,R.drawable.btn_out_quest_var1));
-            holder.bindingQuest.tvBtnOutActivity.setTextColor(ContextCompat.getColor(context, R.color.text_black));
+            holder.bindingQuest.tvBtnOutActivity.setTextColor(ContextCompat.getColor(context, R.color.color_text_acceleration));
         } else {
             holder.bindingQuest.imgQuest.setBackground(ContextCompat.getDrawable(context,R.drawable.round_btn_quest_var2));
             holder.bindingQuest.linearQuest.setBackground(ContextCompat.getDrawable(context,R.drawable.quest_item_var2));
@@ -128,6 +131,8 @@ public class AdapterQuest extends RecyclerView.Adapter<AdapterQuest.MyViewHolder
     //Проверка на ежедневное задание
     private void checkDailyQuest(int position) {
         if (Objects.equals(questList.get(position).getCode(), context.getString(R.string.text_code_quest_daily))) {
+            ((QuestInterface)context).startQuest(questList.get(position).getCode(),
+                    questList.get(position).getNumber(), position, questList.get(position).getRepeat());
             //Отправка на сервер уведомления об активации ежедневного задания
             sendDailyQuest(position);
         }
@@ -188,8 +193,8 @@ public class AdapterQuest extends RecyclerView.Adapter<AdapterQuest.MyViewHolder
                     if(response.body().getSuccess() == 1){
                         //Обновление
                         ((QuestInterface)context).updateTaskUser(questList.get(position).getCode());
-                        questList.remove(position);
-                        notifyDataSetChanged();
+                        //questList.remove(position);
+                        //notifyDataSetChanged();
                     }
                 }
             }

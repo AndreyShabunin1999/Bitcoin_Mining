@@ -22,7 +22,6 @@
             android:background="@drawable/gradient_linearlayout"
             android:paddingStart="16dp"
             android:paddingTop="14dp"
-            android:paddingEnd="16dp"
             android:paddingBottom="20dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,26 +44,27 @@
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.25" />
+                    android:layout_weight="0.2" />
 
                 <TextView
                     android:id="@+id/tv_duplicate_progress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.6"
                     android:textColor="@color/white"
-                    android:textSize="24sp" />
+                    android:textSize="22sp" />
 
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.25" />
+                    android:layout_weight="0.2" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/startBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/gradient_btn_reconnection"
                     android:text="@{user.mining_is_started == 1 ? @string/text_after_start_btn : @string/text_start_btn}"
                     android:textColor="@color/black" />
@@ -77,6 +77,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
                 android:text="@{user.mining_is_started == 1 ? @string/text_conclusion_balance_up : @string/text_empty}"
                 android:textColor="@color/white"/>
         </LinearLayout>
@@ -278,37 +279,42 @@
                     android:id="@+id/linearlayout_ping_server1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
                     android:orientation="horizontal"
                     android:paddingTop="35dp"
                     android:paddingBottom="10dp"
+                    android:layout_alignStart="@+id/img_ping_server1"
+                    android:layout_alignEnd="@+id/img_ping_server1"
                     android:weightSum="3">
 
                     <TextView
                         android:id="@+id/text_ping_server1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ping"
-                        android:textColor="@color/text_black"
+                        android:layout_weight="1"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/text_default_black"
                         android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/tv_value_ping_server1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:paddingStart="2dp"
-                        android:paddingEnd="2dp"
+                        android:layout_weight="1.2"
                         android:text="@string/text_value_ping_server1"
-                        android:textColor="@color/text_black"
-                        android:textSize="20sp" />
+                        android:textAlignment="center"
+                        android:textColor="@color/text_default_black"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tv_ms_server1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ms"
-                        android:textColor="@color/text_black"
+                        android:layout_weight="0.8"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text_default_black"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -361,6 +367,8 @@
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center_horizontal"
                     android:orientation="horizontal"
+                    android:layout_alignStart="@+id/img_ping_server2"
+                    android:layout_alignEnd="@+id/img_ping_server2"
                     android:paddingTop="35dp"
                     android:paddingBottom="10dp">
 
@@ -369,7 +377,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ping"
-                        android:textColor="@color/text_black"
+                        android:layout_weight="1"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/text_default_black"
                         android:textSize="11sp" />
 
                     <TextView
@@ -379,15 +389,18 @@
                         android:paddingStart="2dp"
                         android:paddingEnd="2dp"
                         android:text="@string/text_value_ping_server2"
-                        android:textColor="@color/text_black"
-                        android:textSize="20sp" />
+                        android:layout_weight="1.2"
+                        android:textColor="@color/text_default_black"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tv_ms_server2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ms"
-                        android:textColor="@color/text_black"
+                        android:layout_weight="0.8"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text_default_black"
                         android:textSize="11sp" />
                 </LinearLayout>
 
@@ -442,6 +455,8 @@
                     android:orientation="horizontal"
                     android:paddingTop="35dp"
                     android:paddingBottom="10dp"
+                    android:layout_alignStart="@+id/img_ping_server3"
+                    android:layout_alignEnd="@+id/img_ping_server3"
                     android:weightSum="3">
 
                     <TextView
@@ -449,7 +464,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ping"
-                        android:textColor="@color/text_black"
+                        android:layout_weight="1"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/text_default_black"
                         android:textSize="10sp" />
 
                     <TextView
@@ -459,15 +476,18 @@
                         android:paddingStart="2dp"
                         android:paddingEnd="2dp"
                         android:text="@string/text_value_ping_server3"
-                        android:textColor="@color/text_black"
-                        android:textSize="20sp" />
+                        android:layout_weight="1.2"
+                        android:textColor="@color/text_default_black"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tv_ms_server3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ms"
-                        android:textColor="@color/text_black"
+                        android:textAlignment="viewEnd"
+                        android:layout_weight="0.8"
+                        android:textColor="@color/text_default_black"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -522,6 +542,8 @@
                     android:orientation="horizontal"
                     android:paddingTop="35dp"
                     android:paddingBottom="10dp"
+                    android:layout_alignStart="@+id/img_ping_server4"
+                    android:layout_alignEnd="@+id/img_ping_server4"
                     android:weightSum="3">
 
                     <TextView
@@ -529,7 +551,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ping"
-                        android:textColor="@color/text_black"
+                        android:layout_weight="1"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/text_default_black"
                         android:textSize="10sp" />
 
                     <TextView
@@ -539,15 +563,18 @@
                         android:paddingStart="2dp"
                         android:paddingEnd="2dp"
                         android:text="@string/text_value_ping_server4"
-                        android:textColor="@color/text_black"
-                        android:textSize="20sp" />
+                        android:layout_weight="1.2"
+                        android:textColor="@color/text_default_black"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tv_ms_server4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_ms"
-                        android:textColor="@color/text_black"
+                        android:layout_weight="0.8"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text_default_black"
                         android:textSize="10sp" />
                 </LinearLayout>
 

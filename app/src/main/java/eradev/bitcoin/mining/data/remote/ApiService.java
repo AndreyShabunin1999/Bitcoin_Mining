@@ -96,4 +96,14 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("motherwallet/create_promocode_mobile.php")
     Call<StatusMessageDepozit> createDepCodes(@Field("email") String email, @Field("value") Double value, @Field("sname") String sname, @Field("source") String source);
+
+    //Ввод реферального кода
+    @FormUrlEncoded
+    @POST("eradev/btc/update_enetered_code.php")
+    Call<StatusMessage> updateEneteredCode(@Field("email") String email, @Field("referalBonus") Integer referalBonus , @Field("entered_code") String enteredCode);
+
+    //Начисление за рефералов
+    @FormUrlEncoded
+    @POST("eradev/btc/update_ref_value.php")
+    Call<StatusMessage> updateRefValue(@Field("email") String email, @Field("ref_value") Integer refValue);
 }

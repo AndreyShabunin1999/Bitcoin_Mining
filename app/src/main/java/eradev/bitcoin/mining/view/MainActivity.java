@@ -1,9 +1,12 @@
 package eradev.bitcoin.mining.view;
 
+import static com.unity3d.services.core.properties.ClientProperties.getApplication;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import android.animation.ValueAnimator;
 import android.app.Dialog;
@@ -18,8 +21,10 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -49,6 +54,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import eradev.bitcoin.mining.AdapterReferal;
 import eradev.bitcoin.mining.R;
 import eradev.bitcoin.mining.checkNetwork.NetworkChangeListener;
 import eradev.bitcoin.mining.data.local.App;
@@ -56,6 +62,7 @@ import eradev.bitcoin.mining.data.local.BitcoinMiningDB;
 import eradev.bitcoin.mining.data.local.entity.ConfigAppEntity;
 import eradev.bitcoin.mining.data.local.entity.UserEntity;
 import eradev.bitcoin.mining.data.remote.ApiService;
+import eradev.bitcoin.mining.data.remote.models.Referals;
 import eradev.bitcoin.mining.data.remote.models.StatusMessage;
 import eradev.bitcoin.mining.data.remote.models.Users;
 import eradev.bitcoin.mining.data.remote.request.Servicey;
@@ -80,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     private boolean rewardAfterAds;
     private int clickServer;
     private Integer minimalSummToWithdraw;
-    private Dialog dialog;
+    private Dialog dialog, dialogAccrual;
     private boolean miningJob = false;
     SharedPreferences sharedPreferences;
     BitcoinMiningDB db;
@@ -137,47 +144,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             }
         }
     };
-
-    private void checkTimeBoost(){
-        Call<Users> boostCall;
-        if(Objects.equals(binding.getUser().getPassword(), "")){
-            boostCall = apiService.getUserGoogle(binding.getUser().getEmail());
-        } else {
-            boostCall = apiService.getUser(binding.getUser().getEmail(), binding.getUser().getPassword());
-        }
-        boostCall.enqueue(new Callback<Users>() {
-            @Override
-            public void onResponse(@NonNull Call<Users> call, @NonNull Response<Users> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    if(response.body().getSuccess() == 1){
-                        Date date2 = Calendar.getInstance().getTime();
-                        Date date1 = null;
-                        try {
-                            date1 = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).parse(response.body().getUsers().get(0).getBoost());
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e);
-                        }
-                        assert date1 != null;
-                        Log.e("DATE2", String.valueOf(date2));
-                        Log.e("DATE1", String.valueOf(date1));
-                        //-3 из-за разницы во времени с сервером
-                        long diffHours = ((date2.getTime() - date1.getTime()) / (60 * 60 * 1000)) - 3;
-                        Log.e("TIME", String.valueOf(diffHours));
-                        //Если Boost больше 8 часов возращаем сбрасываем значения буста до дефолтных
-                        if(diffHours > 8) {
-                            SharedPreferences preferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                            preferences.edit().remove("minBoost").apply();
-                            preferences.edit().remove("maxBoost").apply();
-                            preferences.edit().remove("miningPerMinute").apply();
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<Users> call, @NonNull Throwable t) {}
-        });
-    }
 
     private int calculateRandom(int min, int max){
         Random random = new Random();
@@ -266,9 +232,9 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             imgStickServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.stick_active));
             relativeLayoutServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.gradient_active_card));
         } else {
-            textPingServer.setTextColor(ContextCompat.getColor(this, R.color.text_black));
-            valuePingServer.setTextColor(ContextCompat.getColor(this, R.color.text_black));
-            msServer.setTextColor(ContextCompat.getColor(this, R.color.text_black));
+            textPingServer.setTextColor(ContextCompat.getColor(this, R.color.text_default_black));
+            valuePingServer.setTextColor(ContextCompat.getColor(this, R.color.text_default_black));
+            msServer.setTextColor(ContextCompat.getColor(this, R.color.text_default_black));
             imgMetricServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.metric_disable));
             imgStickServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.stick_disable));
             relativeLayoutServer.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.gradient_card_server));
@@ -322,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         }
 
         dialog = new Dialog(MainActivity.this);
+        dialogAccrual = new Dialog(MainActivity.this);
         //Получение минимальной суммы для вывода
         getMinSumToWithdraw();
 
@@ -361,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                         if(response.isSuccessful()){
                             assert response.body() != null;
                             if(response.body().getSuccess() == 1){
-                                Log.e("YA TUT", "PRIVET");
                                 binding.getUser().setMining_is_started(response.body().getSuccess());
                                 miningJob = true;
                                 processMining();
@@ -437,30 +403,8 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                                 //Сохраняем значениее баланса
                                 binding.getUser().setValue(newBalance);
                                 //Анимация счета
-                                final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balance / 100000000F, newBalance / 100000000F);
-                                animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format(getResources().getString(R.string.value_float_btc), (float) animatorBtc.getAnimatedValue())));
-                                animatorBtc.start();
-
-                                final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, newBalance);
-                                animatorSatoshi.addUpdateListener(animation -> binding.bigTextBalance.setText(animatorSatoshi.getAnimatedValue().toString()));
-                                animatorSatoshi.start();
-
-                                Point maxSizePoint = new Point();
-                                getWindowManager().getDefaultDisplay().getSize(maxSizePoint);
-                                final int maxX = maxSizePoint.x;
-
-                                int progressStatus = ((minimalSummToWithdraw - newBalance) / (minimalSummToWithdraw + newBalance) / 2) * 100;
-                                if((newBalance > 1) && (progressStatus < 1)){
-                                    progressStatus = 1;
-                                }
-
-                                binding.progressBar.setProgress(1);
-                                int val = (progressStatus * (binding.progressBar.getWidth() - 2 )) / binding.progressBar.getMax();
-                                int textViewX = val - (binding.tvProgress.getWidth() / 2);
-                                int finalX = binding.tvProgress.getWidth() + textViewX > maxX ? (maxX - binding.tvProgress.getWidth() - 30) : textViewX + 30;
-                                binding.tvProgress.setX(finalX < 0 ? 30 : finalX);
-                                binding.tvProgress.setText(getResources().getString(R.string.process_progress,  progressStatus));
-                                binding.tvDuplicateProgress.setText(getResources().getString(R.string.process_progress,  progressStatus));
+                                startAnimation(balance, newBalance);
+                                updateProgress(newBalance);
                             });
                         }
                     } catch (InterruptedException e) {
@@ -470,6 +414,41 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             };
             threadMining.start();
         }
+    }
+
+    private void startAnimation(int balance, int newBalance){
+        //Анимация счета
+        final ValueAnimator animatorBtc = ValueAnimator.ofFloat(balance / 100000000F, newBalance / 100000000F);
+        animatorBtc.addUpdateListener(animation -> binding.smallTextBalance.setText(String.format(getResources().getString(R.string.value_float_btc), (float) animatorBtc.getAnimatedValue())));
+        animatorBtc.start();
+
+        final ValueAnimator animatorSatoshi = ValueAnimator.ofInt(balance, newBalance);
+        animatorSatoshi.addUpdateListener(animation -> binding.bigTextBalance.setText(animatorSatoshi.getAnimatedValue().toString()));
+        animatorSatoshi.start();
+    }
+
+    private void updateProgress(int newBalance){
+        Point maxSizePoint = new Point();
+        getWindowManager().getDefaultDisplay().getSize(maxSizePoint);
+        final int maxX = maxSizePoint.x;
+
+        int progressStatus = (int) (100 - (Math.abs((((double)minimalSummToWithdraw - (double)newBalance) / (double)minimalSummToWithdraw) * 100D)));
+
+        if (newBalance > minimalSummToWithdraw){
+            progressStatus = 100;
+        } else {
+            if((newBalance > 1) && (progressStatus < 1)) {
+                progressStatus = 1;
+            }
+        }
+
+        binding.progressBar.setProgress(progressStatus);
+        int val = (progressStatus * (binding.progressBar.getWidth() - 2 )) / binding.progressBar.getMax();
+        int textViewX = val - (binding.tvProgress.getWidth() / 2);
+        int finalX = binding.tvProgress.getWidth() + textViewX > maxX ? (maxX - binding.tvProgress.getWidth() - 30) : textViewX + 30;
+        binding.tvProgress.setX(finalX < 0 ? 30 : finalX);
+        binding.tvProgress.setText(getResources().getString(R.string.process_progress,  progressStatus));
+        binding.tvDuplicateProgress.setText(getResources().getString(R.string.process_progress,  progressStatus));
     }
 
     //Функция возвращения значения сатоши в минуту
@@ -508,6 +487,34 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         });
     }
 
+    private void updateBalancUser(int value){
+        int newBalance = binding.getUser().getValue() + value;
+        Call<StatusMessage> balanceCall = apiService
+                .sendBalance(binding.getUser().getEmail(), newBalance);
+        balanceCall.enqueue(new Callback<StatusMessage>() {
+            @Override
+            public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
+                if(response.isSuccessful()){
+                    assert response.body() != null;
+                    if(response.body().getSuccess() == 1){
+                        //обновление баланса в БД
+                        ExecutorService executorService = Executors.newSingleThreadExecutor();
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        executorService.execute(() -> handler.post(() -> {
+                            db.userDAO().updateBalanceFromUser(0, newBalance);
+                            binding.getUser().setValue(newBalance);
+                            if(binding.getUser().getMining_is_started() != 1){
+                                updateProgress(binding.getUser().getValue());
+                            }
+                        }));
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {}
+        });
+    }
+
     //Смена сервера
     private void changeServer(int numberClickServer){
         rewardAfterAds = false;
@@ -521,20 +528,10 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         boostCall.enqueue(new Callback<StatusMessage>() {
             @Override
             public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
-                if(response.isSuccessful()){
-                    assert response.body() != null;
-                    if(response.body().getSuccess() == 1){
-                        Toast.makeText(MainActivity.this, "Буст успешно отправлен", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(MainActivity.this, "Майнинг: " + String.valueOf(binding.getUser().getMining_is_started()), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Буст не отправлен", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                if(response.isSuccessful()){}
             }
             @Override
-            public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, "Буст не отправлен", Toast.LENGTH_SHORT).show();
-            }
+            public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {}
         });
     }
 
@@ -556,6 +553,81 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         dialog.show();
     }
 
+    private void checkAccrualReferals(){
+        Call<Referals> referalsCall = apiService
+                .getReferals(binding.getUser().getRef_code());
+
+        referalsCall.enqueue(new Callback<Referals>() {
+            @Override
+            public void onResponse(@NonNull Call<Referals> call, @NonNull Response<Referals> response) {
+                if(response.isSuccessful()){
+                    assert response.body() != null;
+                    if(response.body().getSuccess() == 1){
+                        if(response.body().getReferalList() != null){
+                            int tempValue = 0;
+                            for(int i = 0; i < response.body().getReferalList().size(); i++){
+                                tempValue += response.body().getReferalList().get(i).getValue();
+                            }
+                            int oldValue = (int) (tempValue * 0.08);
+                            //Проверяем нужно ли начислить бонус за рефералов
+                            if(oldValue != binding.getUser().getRef_value()){
+                                tempValue = (int) ((tempValue - binding.getUser().getRef_value()) * 0.08);
+                                startAnimation(binding.getUser().getValue() , binding.getUser().getValue() + tempValue);
+                                updateBalancUser(tempValue);
+                                showAccrualDialog(tempValue);
+                                updateBalanceRef(tempValue);
+                            }
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Referals> call, @NonNull Throwable t) {}
+        });
+    }
+
+    private void updateBalanceRef(int newBalanceRef){
+        Call<StatusMessage> updateRefCall = apiService
+                .updateRefValue(binding.getUser().getEmail(), newBalanceRef);
+
+        updateRefCall.enqueue(new Callback<StatusMessage>() {
+            @Override
+            public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
+                if(response.isSuccessful()){
+                    assert response.body() != null;
+                    if(response.body().getSuccess() == 1){
+                        ExecutorService executorService = Executors.newSingleThreadExecutor();
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        executorService.execute(() -> handler.post(() -> {
+                            db.userDAO().updateRefValueUser(newBalanceRef);
+                        }));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {}
+        });
+    }
+
+    //открытие диалога для показа плашки начисления
+    private void showAccrualDialog(Integer valueSatoshi){
+        dialogAccrual.setContentView(R.layout.dialog_accrual);
+        dialogAccrual.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Button btnDialog = dialogAccrual.findViewById(R.id.btn_dialog);
+        ImageView imgCross = dialogAccrual.findViewById(R.id.img_cross);
+        TextView tvValueSatoshi = dialogAccrual.findViewById(R.id.text_value_satoshi_accrual);
+        tvValueSatoshi.setText(getResources().getString(R.string.text_btn_quest_satoshi, valueSatoshi));
+        //Обработка нажатия на кнопку "ОК"
+        btnDialog.setOnClickListener(v -> dialogAccrual.cancel());
+        //Обработка нажатия на крестик (закрытие диалогового окна)
+        imgCross.setOnClickListener(v -> dialogAccrual.cancel());
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        dialogAccrual.getWindow().setLayout((6 * width)/7, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialogAccrual.show();
+    }
+
     //открытие диалогового окна с специальным предложением
     private void showDialogSpecOffer(){
         dialog.setContentView(R.layout.dialog_referal);
@@ -569,6 +641,9 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         blackCross.setOnClickListener(v -> dialog.cancel());
         //Переход на экран рефералов
         btnLetsGo.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ReferalsActivity.class)));
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        dialog.getWindow().setLayout((6 * width)/7, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
 
@@ -581,9 +656,8 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                 .subscribe(new DisposableSingleObserver<UserEntity>() {
                     @Override
                     public void onSuccess(UserEntity userEntity) {
-                        //user = userEntity;
                         binding.setUser(userEntity);
-                        //checkTimeBoost();
+                        checkAccrualReferals();
                         // Если майнинг прежде запускался
                         Log.e("STARTMINING", String.valueOf(binding.getUser().getMining_is_started()));
                         if(binding.getUser().getMining_is_started() == 1){
@@ -643,6 +717,15 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             checkOfflineTimeMining();
             miningJob = true;
             processMining();
+        } else {
+            if(binding.getUser() != null){
+                int newBalance = db.userDAO().getBalanceUser(0);
+                if(newBalance != 0){
+                    binding.getUser().setValue(newBalance);
+                    startAnimation(binding.getUser().getValue(), newBalance);
+                    updateProgress(binding.getUser().getValue());
+                }
+            }
         }
         super.onStart();
     }
@@ -654,29 +737,18 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             Log.e("CHECK", "МАЙНИНГ ЕСТЬ");
             //Дата и времявыхода из приложения
             Date dateStopMining = new Date(stopMining);
-
-            Log.e("dateStopMining", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(dateStopMining));
-
             //текущая дата и время (когда пользователь вернулся в приложение)
             Date dateRestart = new Date();
-
-            Log.e("dateRestart", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(dateRestart));
-
             //Расчет разницы в секундах
             long diffSeconds = (dateRestart.getTime() - dateStopMining.getTime())/1000;
-            Log.e("diffSeconds", String.valueOf(diffSeconds));
             //старое значение майнинга в минуту
             int miningPerMinute = sharedPreferences.getInt("miningPerMinute", 120);
-            Log.e("miningPerMinute", String.valueOf(miningPerMinute));
             //Получение баланса на момент выхода из приложения
             int oldBalance = db.userDAO().getBalanceUser(0);
             Log.e("oldBalance", String.valueOf(oldBalance));
 
             //Проверка на наличие действующего буста
             if(sharedPreferences.getInt("boost", 1) != 1){
-
-                Log.e("CHECK", "БУСТ ЕСТЬ");
-
                 //Время старта буста
                 Date dateStartBoost = null;
                 try {
@@ -685,45 +757,26 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                     throw new RuntimeException(e);
                 }
                 assert dateStartBoost != null;
-
-                Log.e("dateStartBoost", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(dateStartBoost));
-
-                //Проверяем на момент окончания буста (если буст активен при возврате
+                //Проверяем на момент окончания буста (если буст активен при возврате)
                 if(((dateStartBoost.getTime()/1000) + 28800) < (dateRestart.getTime()/1000)){
-
-                    Log.e("CHECK", "БУСТ меньше времени возврата");
-
                     //Время работы буста в секундах
-                    long workSecondsBoost = ((dateStartBoost.getTime() / 1000) + 28800) - (dateStopMining.getTime()/1000);
-
+                    long workSecondsBoost = ((dateStartBoost.getTime()/1000) + 28800) - (dateStopMining.getTime()/1000);
                     //получаем баланс при работе с бустом
                     int offlineBalanceBoost = (int) (workSecondsBoost * (miningPerMinute/60));
-
                     //Прибавляем к старому балансу
                     oldBalance = oldBalance + offlineBalanceBoost;
-
                     long remainsTime = dateRestart.getTime()/1000 - ((dateStartBoost.getTime() / 1000) + 28800);
-
-                    miningPerMinute = (int) (miningPerMinute / (1 + (sharedPreferences.getLong("boost", 0)/100)));
-
+                    miningPerMinute = (int) (miningPerMinute / (1 + (sharedPreferences.getInt("boost", 0)/100)));
                     //получаем баланс при работе без буста
                     int offlineBalanceNotBoost = (int) (remainsTime * (miningPerMinute/60));
-
                     binding.getUser().setValue(oldBalance + offlineBalanceNotBoost);
-
                     sharedPreferences.edit().remove("boost").apply();
                 } else {
-                    Log.e("CHECK", "БУСТ больше времени возврата");
-
                     long offlineBalance = (diffSeconds * (miningPerMinute/60));
-                    Log.e("offlineBalance", String.valueOf(offlineBalance));
                     binding.getUser().setValue((int) (oldBalance + offlineBalance));
                 }
             } else {
-                Log.e("CHECK", "БУСТ больше времени возврата");
-
                 long offlineBalance = (diffSeconds * (miningPerMinute/60));
-                Log.e("offlineBalance", String.valueOf(offlineBalance));
                 binding.getUser().setValue((int) (oldBalance + offlineBalance));
             }
         }

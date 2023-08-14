@@ -60,7 +60,11 @@ public class ConclusionFragment extends Fragment {
         imgShareMV.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.share_mixer_wallet)))));
 
         //Обработка нажатия на кнопку "Скопировать"
-        btnCopy.setOnClickListener(v -> copyDepCode());
+        btnCopy.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(requireActivity(), R.anim.scale);
+            v.startAnimation(scale);
+            copyDepCode();
+        });
 
         //Отображение диалогового окна с депозитным кодом
         showDialog();

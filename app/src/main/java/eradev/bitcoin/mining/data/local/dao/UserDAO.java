@@ -44,6 +44,12 @@ public interface UserDAO {
     @Query("UPDATE User SET value =:balance WHERE id = :id")
     void updateBalanceFromUser(int id, int balance);
 
+    @Query("UPDATE User SET entered_code =:enteredCode  WHERE id = 0")
+    void updateEnteredCodeUser(String enteredCode);
+
+    @Query("UPDATE User SET ref_value =:refValue  WHERE id = 0")
+    void updateRefValueUser(Integer refValue);
+
     @Query("UPDATE User SET email = :email," +
             "entered_code = :entered_code," +
             "ref_code = :ref_code," +

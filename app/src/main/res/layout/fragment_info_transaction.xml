@@ -129,7 +129,7 @@
             android:paddingStart="40dp"
             android:paddingEnd="40dp"
             android:text="Вывести"
-            android:textColor="@color/color_end_icon_password"
+            android:textColor="@color/text_default_black"
             android:translationZ="1dp"
             app:layout_constraintBottom_toTopOf="@+id/text_your_trans"
             app:layout_constraintEnd_toEndOf="parent"

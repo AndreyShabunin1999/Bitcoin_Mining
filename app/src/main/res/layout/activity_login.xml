@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
-    tools:context=".LoginActivity">
+    tools:context=".view.AuthActivity">
 
     <ImageView
         android:id="@+id/imageView"
@@ -66,7 +66,7 @@
         app:endIconMode="password_toggle"
         android:layout_marginStart="35dp"
         android:layout_marginEnd="35dp"
-        app:endIconTint="@color/color_end_icon_password"
+        app:endIconTint="@color/text_default_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailLoginLayout">
@@ -93,7 +93,7 @@
         app:endIconCheckable="false"
         android:layout_marginStart="35dp"
         android:layout_marginEnd="35dp"
-        app:endIconTint="@color/color_end_icon_password"
+        app:endIconTint="@color/text_default_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordLayout">

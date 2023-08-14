@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,6 +53,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         db = App.getInstance().getDatabase();
         dismissSplashScreen();
     }
@@ -233,8 +235,6 @@ public class SplashScreen extends AppCompatActivity {
             public void onResponse(@NonNull Call<Users> call, @NonNull Response<Users> response) {
                 if(response.isSuccessful()){
                     assert response.body() != null;
-
-                    Log.e("TEST", response.body().getUsers().get(0).getTask());
                     //обновляем данные о пользователе в БД
                     updateUserDB(response.body().getUsers().get(0));
                     // Если пользователь есть на сервере
@@ -243,9 +243,7 @@ public class SplashScreen extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Users> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<Users> call, @NonNull Throwable t) {}
         });
     }
 

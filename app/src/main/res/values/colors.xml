@@ -8,12 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="text_app_name">#84D1E5</color>
-    <color name="color_end_icon_password">#7E8395</color>
+    <color name="text_default_black">#7E8395</color>
     <color name="color_text_login_activity">#34A853</color>
     <color name="turquoise">#90BEDD</color>
     <color name="turquoise_blue">#8EC0DD</color>
     <color name="turquoise_text">#85D0E5</color>
-    <color name="text_black">#171224</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#fff</color>
     <color name="transparent">#00ff0000</color>
     <color name="color_text_acceleration">#171224</color>

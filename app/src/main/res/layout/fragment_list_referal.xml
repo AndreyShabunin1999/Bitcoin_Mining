@@ -23,7 +23,7 @@
         android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/color_end_icon_password"
+        android:background="@color/text_default_black"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view_referal"
         app:layout_constraintTop_toBottomOf="@+id/tv_ref" />
 
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_center_referal"
-        android:textColor="@color/color_end_icon_password"
+        android:textColor="@color/text_default_black"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

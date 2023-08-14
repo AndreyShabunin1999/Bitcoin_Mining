@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -21,6 +25,7 @@ import java.util.List;
 import eradev.bitcoin.mining.AdapterReferal;
 import eradev.bitcoin.mining.AdapterTransaction;
 import eradev.bitcoin.mining.R;
+import eradev.bitcoin.mining.checkNetwork.NetworkChangeListener;
 import eradev.bitcoin.mining.data.local.App;
 import eradev.bitcoin.mining.data.local.BitcoinMiningDB;
 import eradev.bitcoin.mining.data.remote.ApiService;
@@ -35,28 +40,29 @@ import retrofit2.Response;
 public class ListTransactionActivity extends AppCompatActivity {
 
     AdapterTransaction adapterTransaction;
+    RecyclerView recyclerView;
 
     List<Promocode> promocodesList = new ArrayList<>();
+
+    NetworkChangeListener networkChangeListener = new NetworkChangeListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_transaction);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Button btnBack = findViewById(R.id.btn_back_list_trans);
         ImageView imgShareMV = findViewById(R.id.img_share_mixer_wallet);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_transaction);
+        recyclerView = findViewById(R.id.recyclerView_transaction);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         //Получение списка промокодов
         getPromocodesList();
-
-        adapterTransaction = new AdapterTransaction(ListTransactionActivity.this, promocodesList);
-        recyclerView.setAdapter(adapterTransaction);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
-
 
         //Обработка нажатия на кнопку <-
         btnBack.setOnClickListener(v -> {
@@ -82,6 +88,9 @@ public class ListTransactionActivity extends AppCompatActivity {
                     assert response.body() != null;
                     if(response.body().getSuccess() == 1){
                         promocodesList = response.body().getPromocodes();
+                        adapterTransaction = new AdapterTransaction(ListTransactionActivity.this, promocodesList);
+                        recyclerView.setAdapter(adapterTransaction);
+                        recyclerView.addItemDecoration(new DividerItemDecoration(ListTransactionActivity.this, DividerItemDecoration.HORIZONTAL));
                     }
                 }
             }
@@ -89,5 +98,18 @@ public class ListTransactionActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<DepositCodes> call, @NonNull Throwable t) {}
         });
+    }
+
+    @Override
+    protected void onStart() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeListener, filter);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(networkChangeListener);
+        super.onStop();
     }
 }

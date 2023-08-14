@@ -58,6 +58,8 @@ public class InfoTransactionFragment extends Fragment {
     ApiService apiService;
     BitcoinMiningDB db;
 
+    int minimalSummToWithdraw;
+
     SharedPreferences sharedPreferences;
 
     @Override
@@ -76,10 +78,40 @@ public class InfoTransactionFragment extends Fragment {
         //Получение информации о транзакциях
         getTransaction();
 
-        Integer balance = this.getArguments().getInt("balance", 0);
-        Integer minimalSummToWithdraw = this.getArguments().getInt("minimalSummToWithdraw", 0);
+        int balance = this.getArguments().getInt("balance", 0);
+        minimalSummToWithdraw = this.getArguments().getInt("minimalSummToWithdraw", 0);
         tvBalance.setText(getResources().getString(R.string.text_btn_quest_satoshi, balance));
 
+        updateView(balance);
+
+        Double valueUSTD = balance / this.getArguments().getDouble("courseToUSTD", 0);
+        textValueUSTD.setText(getResources().getString(R.string.text_value_ustd_trans, valueUSTD));
+
+        //Обработка клика по кнопки "Вывести"
+        btnConclusion.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(requireActivity(), R.anim.scale);
+            v.startAnimation(scale);
+            if(balance > minimalSummToWithdraw) {
+                //Обновление баланса Пользователя на сервере и БД
+                updateBalanceOnServer(-balance);
+                //Создание депозитного кода
+                createDepCode(valueUSTD);
+            } else {
+                showDialog();
+            }
+        });
+
+        btnTransaction.setOnClickListener(v -> {
+            Animation scale = AnimationUtils.loadAnimation(requireActivity(), R.anim.scale);
+            v.startAnimation(scale);
+            Intent intent = new Intent(requireActivity(), ListTransactionActivity.class);
+            intent.putExtra("email", this.getArguments().getString("email"));
+            startActivity(intent);
+        });
+        return view;
+    }
+
+    private void updateView(int balance){
         if(balance > minimalSummToWithdraw) {
             btnConclusion.setTextColor(getResources().getColor(R.color.white));
             btnConclusion.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_btn_sign_up, null));
@@ -87,36 +119,10 @@ public class InfoTransactionFragment extends Fragment {
             tvRemainder.setText(R.string.text_empty);
         } else {
             textInfoConclusion.setText(getResources().getString(R.string.text_not_money_trans));
-            btnConclusion.setTextColor(getResources().getColor(R.color.color_end_icon_password));
+            btnConclusion.setTextColor(getResources().getColor(R.color.text_default_black));
             btnConclusion.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.btn_unused_trans, null));
             tvRemainder.setText(getResources().getString(R.string.text_btn_quest_satoshi, minimalSummToWithdraw - balance));
         }
-
-        Double valueUSTD = balance / this.getArguments().getDouble("courseToUSTD", 0);
-        textValueUSTD.setText(getResources().getString(R.string.text_value_ustd_trans, valueUSTD));
-
-        //Обработка клика по кнопки "Вывести"
-        btnConclusion.setOnClickListener(v -> {
-            Animation scale = AnimationUtils.loadAnimation(requireContext(), R.anim.scale);
-            v.startAnimation(scale);
-            if(balance > minimalSummToWithdraw) {
-                //Обновление баланса Пользователя на сервере и БД
-                updateBalanceOnServer(-balance);
-                //Создание депозитного кода
-                createDepCode();
-            } else {
-                showDialog();
-            }
-        });
-
-        btnTransaction.setOnClickListener(v -> {
-            Animation scale = AnimationUtils.loadAnimation(requireContext(), R.anim.scale);
-            v.startAnimation(scale);
-            Intent intent = new Intent(requireActivity(), ListTransactionActivity.class);
-            intent.putExtra("email", this.getArguments().getString("email"));
-            startActivity(intent);
-        });
-        return view;
     }
 
     //Создание диалогового окна о невозможности вывести средства
@@ -140,7 +146,6 @@ public class InfoTransactionFragment extends Fragment {
         int width = metrics.widthPixels;
         dialog.getWindow().setLayout((6 * width)/7, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.show();
-
     }
 
     private void updateBalanceOnServer(int newBalance){
@@ -155,6 +160,9 @@ public class InfoTransactionFragment extends Fragment {
                     if(response.body().getSuccess() == 1){
                         //Обновление данных в БД
                         db.userDAO().updateBalanceFromUser(0, 0);
+                        updateView(0);
+                        tvBalance.setText(getResources().getString(R.string.text_btn_quest_satoshi, 0));
+                        textValueUSTD.setText(getResources().getString(R.string.text_value_ustd_trans, 0D));
                     }
                 }
             }
@@ -164,9 +172,9 @@ public class InfoTransactionFragment extends Fragment {
         });
     }
 
-    private void createDepCode(){
+    private void createDepCode(Double valueUSTD){
         Call<StatusMessageDepozit> depCodeCall = apiService
-                .createDepCodes(this.getArguments().getString("email"), 100D,
+                .createDepCodes(this.getArguments().getString("email"), valueUSTD,
                         getResources().getString(R.string.text_generate, requireContext().getPackageName()), requireContext().getPackageName());
 
         depCodeCall.enqueue(new Callback<StatusMessageDepozit>() {
@@ -178,6 +186,7 @@ public class InfoTransactionFragment extends Fragment {
                         if(callbackFragment != null){
                             sharedPreferences.edit().putString("promocode", response.body().getPromocode()).apply();
                             callbackFragment.changeFragment();
+                            getTransaction();
                         }
                     }
                 }
@@ -197,7 +206,7 @@ public class InfoTransactionFragment extends Fragment {
                 if(response.isSuccessful()){
                     assert response.body() != null;
                     if(response.body().getSuccess() == 1){
-                        if(response.body().getPromocodes().size() > 1) {
+                        if(response.body().getPromocodes().size() > 0) {
                             btnTransaction.setVisibility(View.VISIBLE);
                             textYourTrans.setVisibility(View.VISIBLE);
                             viewLineTrans.setVisibility(View.INVISIBLE);
