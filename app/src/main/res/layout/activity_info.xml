@@ -275,9 +275,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:layout_marginTop="15dp"
-                android:paddingEnd="16dp"
                 android:translationZ="1dp"
                 android:weightSum="7">
 
@@ -286,10 +283,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/gradient_active_card"
-                    android:paddingLeft="5dp"
+                    android:background="@drawable/gradient_card_server"
+                    android:paddingLeft="3dp"
                     android:paddingTop="10dp"
-                    android:paddingRight="5dp"
+                    android:paddingRight="3dp"
                     android:paddingBottom="10dp">
 
                     <ImageView
@@ -297,7 +294,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:background="@drawable/metric_active" />
+                        android:background="@drawable/metric_disable" />
 
                     <ImageView
                         android:id="@+id/img_stick_server1"
@@ -305,7 +302,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
-                        android:background="@drawable/stick_active"
+                        android:background="@drawable/stick_disable"
                         android:rotation="136.8" />
 
                     <LinearLayout
@@ -322,32 +319,32 @@
 
                         <TextView
                             android:id="@+id/text_ping_server1"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ping"
                             android:layout_weight="1"
                             android:textAlignment="viewStart"
-                            android:textColor="@color/color_text_ping"
+                            android:textColor="@color/text_default_black"
                             android:textSize="10sp" />
 
                         <TextView
                             android:id="@+id/tv_value_ping_server1"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1.2"
                             android:text="@string/text_value_ping_server1"
                             android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textSize="17sp" />
+                            android:textColor="@color/text_default_black"
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server1"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_ms"
                             android:layout_weight="0.8"
                             android:textAlignment="viewEnd"
-                            android:textColor="@color/turquoise_blue"
+                            android:textColor="@color/text_default_black"
                             android:textSize="10sp" />
                     </LinearLayout>
 
@@ -372,9 +369,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/gradient_card_server"
-                    android:paddingLeft="5dp"
+                    android:paddingLeft="3dp"
                     android:paddingTop="10dp"
-                    android:paddingRight="5dp"
+                    android:paddingRight="3dp"
                     android:paddingBottom="10dp">
 
                     <ImageView
@@ -413,18 +410,17 @@
                             android:layout_weight="1"
                             android:textAlignment="viewStart"
                             android:textColor="@color/text_default_black"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
 
                         <TextView
                             android:id="@+id/tv_value_ping_server2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingStart="2dp"
-                            android:paddingEnd="2dp"
                             android:text="@string/text_value_ping_server2"
                             android:layout_weight="1.2"
+                            android:textAlignment="center"
                             android:textColor="@color/text_default_black"
-                            android:textSize="17sp" />
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server2"
@@ -434,7 +430,7 @@
                             android:layout_weight="0.8"
                             android:textAlignment="viewEnd"
                             android:textColor="@color/text_default_black"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
 
                     <TextView
@@ -458,9 +454,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/gradient_card_server"
-                    android:paddingLeft="5dp"
+                    android:paddingLeft="3dp"
                     android:paddingTop="10dp"
-                    android:paddingRight="5dp"
+                    android:paddingRight="3dp"
                     android:paddingBottom="10dp">
 
                     <ImageView
@@ -506,12 +502,11 @@
                             android:id="@+id/tv_value_ping_server3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingStart="2dp"
-                            android:paddingEnd="2dp"
                             android:text="@string/text_value_ping_server3"
                             android:layout_weight="1.2"
+                            android:textAlignment="center"
                             android:textColor="@color/text_default_black"
-                            android:textSize="17sp" />
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server3"
@@ -545,9 +540,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/gradient_card_server"
-                    android:paddingLeft="5dp"
+                    android:paddingLeft="3dp"
                     android:paddingTop="10dp"
-                    android:paddingRight="5dp"
+                    android:paddingRight="3dp"
                     android:paddingBottom="10dp">
 
                     <ImageView
@@ -593,12 +588,11 @@
                             android:id="@+id/tv_value_ping_server4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingStart="2dp"
-                            android:paddingEnd="2dp"
                             android:text="@string/text_value_ping_server4"
                             android:layout_weight="1.2"
+                            android:textAlignment="center"
                             android:textColor="@color/text_default_black"
-                            android:textSize="17sp" />
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tv_ms_server4"

@@ -75,9 +75,10 @@ public class FragmentRegister extends Fragment {
                             if(response.body().getSuccess() == 0) {
                                 //Toast.makeText(getContext(), R.string.text_error_registration, Toast.LENGTH_SHORT).show();
                             } else {
-                                addUserBD(new UserEntity(etEmail.getText().toString().trim(), etPassword.getText().toString().trim()));
+                                UserEntity user = new UserEntity(etEmail.getText().toString().trim(), etPassword.getText().toString().trim());
+                                addUserBD(user);
+                                updateUserDB(user);
                               //  Toast.makeText(getContext(), R.string.text_success_registration, Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getContext(), MainActivity.class));
                             }
                         } else {
                            // Toast.makeText(getContext(), R.string.text_error_registration, Toast.LENGTH_SHORT).show();
@@ -149,8 +150,9 @@ public class FragmentRegister extends Fragment {
                 if(response.isSuccessful()){
                     assert response.body() != null;
                     //обновляем данные о пользователе в БД
-                    updateUserDB(response.body().getUsers().get(0));
+                    updateUserInDB(response.body().getUsers().get(0));
                     startActivity(new Intent(getContext(), MainActivity.class));
+                    requireActivity().finish();
                 }
             }
 
@@ -159,7 +161,7 @@ public class FragmentRegister extends Fragment {
         });
     }
 
-    private void updateUserDB(User user) {
+    private void updateUserInDB(User user) {
         BitcoinMiningDB db = App.getInstance().getDatabase();
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());

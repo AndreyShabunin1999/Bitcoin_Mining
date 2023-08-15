@@ -3,6 +3,7 @@ package eradev.bitcoin.mining.view;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class InfoActivity extends AppCompatActivity {
 
         Button btnInfo = findViewById(R.id.btn_back_info);
         Button btnOk = findViewById(R.id.btn_ok_info);
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
 
         btnInfo.setOnClickListener(v -> {
             Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);

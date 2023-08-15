@@ -380,8 +380,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             v.startAnimation(scale);
             startActivity(new Intent(MainActivity.this, QuestsActivity.class));
         });
-
-
     }
 
     private void processMining(){
@@ -390,6 +388,8 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             //скорость в минуту
             int miningPerMinute = calculateMiningPerMinute();
             float speed = (float) 60/miningPerMinute * 1000;
+            Log.e("SPEED", String.valueOf(speed));
+            Log.e("miningPerMinute", String.valueOf(miningPerMinute));
             Handler handler = new Handler();
             threadMining = new Thread() {
                 @Override
@@ -459,9 +459,11 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         int ping = (50 - sharedPreferences.getInt("ping", 1))/2;
         int zk = sharedPreferences.getInt("miningPerMinute", 120);
         if(boost != 1){
-            return (zk * (1 + (boost/100)) * (1 + ping/100));
+            double value = (zk * (double)(1D + (boost/100D)) * (double)(1D + (ping/100D)));
+            return (int)(value);
         } else {
-            return (zk * boost * (1 + ping/100));
+            double value = (zk * boost * (double)(1D + (ping/100D)));
+            return (int)(value);
         }
     }
 
@@ -656,8 +658,8 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                 .subscribe(new DisposableSingleObserver<UserEntity>() {
                     @Override
                     public void onSuccess(UserEntity userEntity) {
+                        Log.e("LOAD",userEntity.toString());
                         binding.setUser(userEntity);
-                        checkAccrualReferals();
                         // Если майнинг прежде запускался
                         Log.e("STARTMINING", String.valueOf(binding.getUser().getMining_is_started()));
                         if(binding.getUser().getMining_is_started() == 1){
@@ -666,6 +668,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
                             miningJob = true;
                             processMining();
                         }
+                        checkAccrualReferals();
                     }
                     @Override
                     public void onError(Throwable e) {}

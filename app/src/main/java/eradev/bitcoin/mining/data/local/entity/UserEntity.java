@@ -78,6 +78,24 @@ public class UserEntity {
         this.task = "";
     }
 
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", entered_code='" + entered_code + '\'' +
+                ", ref_code='" + ref_code + '\'' +
+                ", ref_value=" + ref_value +
+                ", server_time='" + server_time + '\'' +
+                ", value=" + value +
+                ", mining_is_started=" + mining_is_started +
+                ", task='" + task + '\'' +
+                ", daily='" + daily + '\'' +
+                ", boost='" + boost + '\'' +
+                '}';
+    }
+
     public UserEntity(User user, String password) {
         this.id = 0;
         this.email = user.getEmail();

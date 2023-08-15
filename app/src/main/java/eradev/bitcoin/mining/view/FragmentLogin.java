@@ -117,6 +117,7 @@ public class FragmentLogin extends Fragment {
                                     User user = response.body().getUsers().get(0);
                                     updateUserInBD(user, etPassword.getText().toString().trim());
                                     startActivity(new Intent(getContext(), MainActivity.class));
+                                    requireActivity().finish();
                                 } else {
                              //       Toast.makeText(getContext(), R.string.text_not_found_user, Toast.LENGTH_SHORT).show();
                                 }

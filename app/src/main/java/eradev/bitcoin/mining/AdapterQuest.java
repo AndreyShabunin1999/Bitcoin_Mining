@@ -1,12 +1,9 @@
 package eradev.bitcoin.mining;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.unity3d.services.core.properties.ClientProperties.getApplicationContext;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +88,7 @@ public class AdapterQuest extends RecyclerView.Adapter<AdapterQuest.MyViewHolder
         //Обработка нажатия по значку поделиться приложением
         holder.bindingQuest.imgQuest.setOnClickListener(v -> {
             //Если пользователь нажал по значку поделиться на реферальном задании
-            if(Objects.equals(questList.get(position).getCode(), context.getString(R.string.text_your_ref_code))) {
+            if(Objects.equals(questList.get(position).getCode(), context.getString(R.string.text_code_quest_referal))) {
                 try {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
@@ -193,8 +190,6 @@ public class AdapterQuest extends RecyclerView.Adapter<AdapterQuest.MyViewHolder
                     if(response.body().getSuccess() == 1){
                         //Обновление
                         ((QuestInterface)context).updateTaskUser(questList.get(position).getCode());
-                        //questList.remove(position);
-                        //notifyDataSetChanged();
                     }
                 }
             }

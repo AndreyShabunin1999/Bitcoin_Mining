@@ -11,7 +11,7 @@
     <ImageView
         android:id="@+id/img_cross"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:src="@drawable/cross"
         android:layout_weight="1"
         android:paddingBottom="15dp"
@@ -20,7 +20,7 @@
     <ImageView
         android:id="@+id/img_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:src="@drawable/black_rocket"
         android:layout_weight="1"
         android:paddingBottom="15dp"
@@ -29,7 +29,7 @@
     <TextView
         android:id="@+id/text_title_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="@string/text_tv_acceleration"
         android:textColor="@color/color_text_acceleration"
         android:textAllCaps="true"
@@ -55,7 +55,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/background_btn_dialog"
         android:drawablePadding="20dp"
         android:paddingStart="50dp"

@@ -64,6 +64,8 @@ public class ReferalFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_referal, container, false);
         binding.setUser(db.userDAO().getUser(0));
 
+        Log.e("REFCODES",binding.getUser().getRef_code());
+
         view = binding.getRoot();
 
         //инициализация глобальный переменных
